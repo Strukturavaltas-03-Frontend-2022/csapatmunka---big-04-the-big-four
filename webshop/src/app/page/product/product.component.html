@@ -1,0 +1,22 @@
+<div class="row">
+    <div *ngIf="productList$ | async as productList" class="col-12">
+       <app-data-table
+        [list]="productList"
+        [columns]="columns"
+        (onSelect)="onProductSelect($event)"
+        (onDelete)="onProductDelete($event)"
+      ></app-data-table>
+    </div>
+  </div>
+
+ <!-- <p>product works!</p>
+<div class="row">
+    <div *ngIf="productList$ | async as productList" class="col-12">
+       <app-data-table
+        [list]="productList"
+        [columns]="columns"
+        (onSelect)="onProductSelect($event)"
+        (onDelete)="onProductDelete($event)"
+      ></app-data-table>
+    </div>
+  </div> -->
