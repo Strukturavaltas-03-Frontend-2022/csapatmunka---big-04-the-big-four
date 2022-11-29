@@ -1,0 +1,66 @@
+cs-address:
+https://mockaroo.com/16d08af0
+{
+  "id": 1,
+  "zip": 17765,
+  "country": "Indonesia",
+  "city": "Dofa",
+  "street": "Park Meadow",
+  "notes": "72095"
+}
+
+cs-bill:
+https://mockaroo.com/20133790
+{
+  "id": 1,
+  "orderID": 1,
+  "amount": 9,
+  "status": "new"
+}
+
+cs-category:
+https://mockaroo.com/e039c820
+öt kategóriát generáltam, a productban is ennyi szerepel catid:1-5
+ennek a tartalmát majd editálhatjuk tetszőleges szövegre vagy csak egy-öt
+{
+  "id": 1,
+  "name": "Eal",
+  "description": "Lemerle"
+}
+
+cs-customer:
+https://mockaroo.com/77022cd0
+az address-re egy véletlenszám 1-1000 között - ennyi cím van a cs-address-ben
+{
+  "id": 1,
+  "first_name": "Hazel",
+  "last_name": "Fussey",
+  "email": "hfussey0@wikipedia.org",
+  "address": 522,
+  "active": true
+}
+
+cs-order:
+https://mockaroo.com/7174f9f0
+{
+  "id": 1,
+  "customerID": 886, ez 1-1000 mint ahány customer van
+  "productID": 531, ez 1-1000 mint ahány product van
+  "amount": 2, ez 1-10
+  "status": "paid" ez véletlenszerűen valamelyik opció.
+}
+
+
+cs-product:
+https://mockaroo.com/8544f340
+{
+  "id": 1,
+  "name": "Suzuki",
+  "type": "SJ",
+  "catID": 3,
+  "description": 1985,
+  "price": 11499,
+  "featured": true,
+  "active": false
+}
+
