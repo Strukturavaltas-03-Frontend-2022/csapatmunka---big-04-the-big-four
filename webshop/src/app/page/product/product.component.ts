@@ -11,7 +11,7 @@ import { DataService } from 'src/app/service/data.service';
 })
 export class ProductComponent {
   
-  productList$: Observable<Product[]> = this.dataService.getAll('product');
+  list$: Observable<Product[]> = this.dataService.getAll('product');
 
   columns = this.config.productTableColumns;
 
@@ -24,14 +24,14 @@ export class ProductComponent {
     //this.productList$.subscribe(data=>{console.log(data)})
   }
 
-  onProductSelect( product:  Product): void {
+  onSelect( product:  Product): void {
     console.log( product);
    
   }
 
-  onProductDelete(product:  Product): void {
+  onDelete(product:  Product): void {
     this.dataService.delete( product.id, 'product').subscribe(
-      () => this.productList$ = this.dataService.getAll('product'),
+      () => this.list$ = this.dataService.getAll('product'),
     );
   }
 }

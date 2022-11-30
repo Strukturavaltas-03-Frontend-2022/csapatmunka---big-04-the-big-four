@@ -35,10 +35,12 @@ export class DataService {
     );
   }
 
-  /*create( entityName:string): Observable<any> {
+  create(entity: any, entityName:string): Observable<any> {
     return this.http.post<any>(
       `${this.apiUrl}${entityName}`,
-      drug
+      entity
     );
-  }*/
+  }
 }
+
+
