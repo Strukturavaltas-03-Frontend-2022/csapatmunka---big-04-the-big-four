@@ -3,14 +3,16 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th *ngFor="let col of columns">
+                    <th *ngFor="let col of columns" (click)="sortRequest(col.key)" class="header__sort">
                         {{ col.title }}
+                        <i *ngIf="col.key === sortKey && sortDirection == 1" class="fa fa-sort-asc"></i>
+                        <i *ngIf="col.key === sortKey && sortDirection == -1" class="fa fa-sort-desc"></i>
                     </th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let row of list">
+                <tr *ngFor="let row of list | sorter: sortKey: sortDirection">
                     <td *ngFor="let col of columns">
                         {{ row[col.key] }}
                     </td>
@@ -29,4 +31,3 @@
         </table>
     </div>
 </div>
-

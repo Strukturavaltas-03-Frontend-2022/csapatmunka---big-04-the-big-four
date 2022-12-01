@@ -11,14 +11,18 @@ export interface ITableCol {
   templateUrl: './data-table.component.html',
   styleUrls: ['./data-table.component.scss']
 })
-export class DataTableComponent<T extends {[x: string]: any}> implements OnInit {
+export class DataTableComponent<T extends { [x: string]: any }> implements OnInit {
 
+  // Dynamic table components
   @Input() list: T[] = [];
-
   @Input() columns: ITableCol[] = [];
 
-  @Output() onSelect: EventEmitter<T> = new EventEmitter();
+  // Variables for sorting
+  sortKey: string = 'name';
+  sortDirection: number = 1;
 
+  // Table button operations
+  @Output() onSelect: EventEmitter<T> = new EventEmitter();
   @Output() onDelete: EventEmitter<T> = new EventEmitter();
 
   constructor() { }
@@ -26,6 +30,7 @@ export class DataTableComponent<T extends {[x: string]: any}> implements OnInit 
   ngOnInit(): void {
   }
 
+  // Table button methods
   raiseSelect(row: T): void {
     this.onSelect.emit(row);
   }
@@ -34,4 +39,12 @@ export class DataTableComponent<T extends {[x: string]: any}> implements OnInit 
     this.onDelete.emit(row);
   }
 
+  sortRequest(key: string): void {
+    if (key === this.sortKey) {
+      this.sortDirection *= -1
+    } else {
+      this.sortDirection = 1
+    }
+    this.sortKey = key
+  }
 }
