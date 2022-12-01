@@ -11,12 +11,14 @@ export class SorterPipe<T extends { [x: string]: any }> implements PipeTransform
     }
 
     return value.sort((a, b) => {
+
       if (typeof a[key] === 'number' && typeof b[key] === 'number') {
         return (a[key] - b[key]) * direction
       } else {
         return ('' + a[key]).localeCompare(('' + b[key])) * direction
       }
+
     })
   }
-
 }
+
