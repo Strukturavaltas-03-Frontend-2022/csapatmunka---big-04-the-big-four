@@ -17,6 +17,7 @@ import { EditComponent } from './page/edit/edit.component'
 
 import { FilterPipe } from './common/data-table/pipe/filter.pipe';
 import { SorterPipe } from './common/data-table/pipe/sorter.pipe';
+import { TableColSumPipe } from './common/data-table/pipe/table-col-sum.pipe';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { SorterPipe } from './common/data-table/pipe/sorter.pipe';
     BillComponent,
     FilterPipe,
     SorterPipe,
-    EditComponent
+    EditComponent,
+    TableColSumPipe
   ],
   imports: [
     BrowserModule,
