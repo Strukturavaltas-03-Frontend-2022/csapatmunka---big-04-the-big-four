@@ -6,9 +6,10 @@ export class FormField {
   label: string = '';
   key: string = '';
   type?: string = 'text';
-  selectOptions?: string[] = [''];
-  required?: boolean = true;
+  htmlTag?: string = 'input'
+  selectOptions?: { text: string, value: any }[];
   validators?: ValidatorFn[] = [];
+  errorMessage?: string;
 }
 
 @Injectable({
@@ -42,7 +43,7 @@ export class FormService {
     {
       label: 'Description',
       key: 'description',
-      type: 'textarea',
+      htmlTag: 'textarea',
       validators: [
         Validators.required,
       ]
@@ -106,15 +107,29 @@ export class FormService {
 
   orderEditorFormFields: FormField[] = [
     {
-      label: 'Customer',
+      label: 'CustomerID',
       key: 'customerID',
       validators: [
         Validators.required,
       ],
     },
     {
-      label: 'Product',
+      label: 'Customer',
+      key: 'customer',
+      validators: [
+        Validators.required,
+      ],
+    },
+    {
+      label: 'ProductID',
       key: 'productID',
+      validators: [
+        Validators.required,
+      ],
+    },
+    {
+      label: 'Product',
+      key: 'product',
       validators: [
         Validators.required,
       ],
@@ -130,8 +145,12 @@ export class FormService {
     {
       label: 'Status',
       key: 'status',
-      type: 'select',
-      selectOptions: ['new', 'shipped', 'paid'],
+      htmlTag: 'select',
+      selectOptions: [
+        { text: 'New', value: 'new' },
+        { text: 'Shipped', value: 'shipped' },
+        { text: 'Paid', value: 'paid' },
+      ],
       validators: [
         Validators.required,
       ]
@@ -162,8 +181,11 @@ export class FormService {
     {
       label: 'Status',
       key: 'status',
-      type: 'select',
-      selectOptions: ['new', 'paid'],
+      htmlTag: 'select',
+      selectOptions: [
+        { text: 'New', value: 'new' },
+        { text: 'Paid', value: 'paid' },
+      ],
       validators: [
         Validators.required,
       ]

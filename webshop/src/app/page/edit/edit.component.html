@@ -1,1 +1,26 @@
-<p>edit works!</p>
+<div class="col-12">
+  <form *ngIf="formValues$" [formGroup]="baseFormGroup" (ngSubmit)="onSubmit()" style="max-width: 400px;"
+    class="mx-auto">
+    <div *ngFor="let field of fields" class="form-group">
+      <div>
+        <label>{{ field.label }}</label>
+        <ng-container [ngSwitch]="field.htmlTag">
+
+          <select *ngSwitchCase="'select'" [formControlName]="field.key" [name]="field.key" class="form-select">
+            <option *ngFor="let opt of field.selectOptions" [value]="opt.value"> {{ opt.text }} </option>
+          </select>
+
+          <textarea *ngSwitchCase="'textarea'" [formControlName]="field.key" [name]="field.key"
+            class="form-control"></textarea>
+
+          <input *ngSwitchDefault [formControlName]="field.key" [name]="field.key" [type]="field.type"
+            [class]="field.type | tagToBootstrapClass">
+
+        </ng-container>
+        <div *ngIf="baseFormGroup.controls[field.key].invalid" class="error-message">
+          {{field.errorMessage}}
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
