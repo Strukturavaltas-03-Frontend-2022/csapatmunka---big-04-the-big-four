@@ -7,4 +7,11 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'webshop';
+  currPage2:string="Dashboard"
+
+  upDateCurrPage(currPage1:string)
+  {
+    this.currPage2=currPage1;
+  }
+
 }
