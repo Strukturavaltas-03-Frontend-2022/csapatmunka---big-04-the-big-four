@@ -17,7 +17,11 @@ import { EditComponent } from './page/edit/edit.component'
 
 import { FilterPipe } from './common/data-table/pipe/filter.pipe';
 import { SorterPipe } from './common/data-table/pipe/sorter.pipe';
+
 import { TagToBootstrapClassPipe } from './pipe/tag-to-bootstrap-class.pipe';
+
+import { TableColSumPipe } from './common/data-table/pipe/table-col-sum.pipe';
+
 
 @NgModule({
   declarations: [
@@ -34,6 +38,8 @@ import { TagToBootstrapClassPipe } from './pipe/tag-to-bootstrap-class.pipe';
     SorterPipe,
     EditComponent,
     TagToBootstrapClassPipe,
+    TableColSumPipe
+
   ],
   imports: [
     BrowserModule,
