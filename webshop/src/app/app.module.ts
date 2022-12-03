@@ -38,7 +38,7 @@ import { TableColSumPipe } from './common/data-table/pipe/table-col-sum.pipe';
     SorterPipe,
     EditComponent,
 
-    TagToBootstrapClassPipe
+    TagToBootstrapClassPipe,
 
     TableColSumPipe
 
