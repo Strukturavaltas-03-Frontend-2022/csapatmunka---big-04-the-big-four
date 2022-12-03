@@ -1,5 +1,6 @@
 <div class="col-12">
-  <form [formGroup]="baseFormGroup" (ngSubmit)="onSubmit()" style="max-width: 400px;" class="mx-auto">
+  <form *ngIf="formValues$" [formGroup]="baseFormGroup" (ngSubmit)="onSubmit()" style="max-width: 400px;"
+    class="mx-auto">
     <div *ngFor="let field of fields" class="form-group">
       <div>
         <label>{{ field.label }}</label>

@@ -107,15 +107,29 @@ export class FormService {
 
   orderEditorFormFields: FormField[] = [
     {
-      label: 'Customer',
+      label: 'CustomerID',
       key: 'customerID',
       validators: [
         Validators.required,
       ],
     },
     {
-      label: 'Product',
+      label: 'Customer',
+      key: 'customer',
+      validators: [
+        Validators.required,
+      ],
+    },
+    {
+      label: 'ProductID',
       key: 'productID',
+      validators: [
+        Validators.required,
+      ],
+    },
+    {
+      label: 'Product',
+      key: 'product',
       validators: [
         Validators.required,
       ],
