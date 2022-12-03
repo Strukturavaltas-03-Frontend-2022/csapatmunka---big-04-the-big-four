@@ -33,6 +33,22 @@ const routes: Routes = [
     path: 'edit',
     component: EditComponent,
   },
+  {
+    path: 'edit-bill/:id',
+    component: EditComponent,
+  },
+  {
+    path: 'edit-customer/:id',
+    component: EditComponent,
+  },
+  {
+    path: 'edit-order/:id',
+    component: EditComponent,
+  },
+  {
+    path: 'edit-product/:id',
+    component: EditComponent,
+  },
 ];
 
 @NgModule({
