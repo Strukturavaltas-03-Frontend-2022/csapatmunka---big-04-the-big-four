@@ -33,7 +33,7 @@ import { TagToBootstrapClassPipe } from './pipe/tag-to-bootstrap-class.pipe';
     FilterPipe,
     SorterPipe,
     EditComponent,
-    TagToBootstrapClassPipe
+    TagToBootstrapClassPipe,
   ],
   imports: [
     BrowserModule,

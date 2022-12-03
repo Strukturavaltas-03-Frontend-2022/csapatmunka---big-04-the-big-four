@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FormField, FormService } from 'src/app/service/form.service';
+import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
+import { DataService } from 'src/app/service/data.service';
 import { Bill } from 'src/app/model/bill';
 import { Customer } from 'src/app/model/customer';
 import { Order } from 'src/app/model/order';
 import { Product } from 'src/app/model/product';
-import { combineLatest, map, Observable, of } from 'rxjs';
-import { DataService } from 'src/app/service/data.service';
-import { Category } from 'src/app/model/category';
 
 @Component({
   selector: 'app-edit',
@@ -18,30 +18,41 @@ import { Category } from 'src/app/model/category';
 
 export class EditComponent implements OnInit {
 
-  // Variables for creating forms  
+  // Variables for creating forms
   baseFormGroup: FormGroup = new FormGroup({});
   fields: FormField[] = this.formService.orderEditorFormFields;
 
-  dataIdForEdit: number = 2;
-  formValues$: Observable<Order> = new Observable
+  currentParametersForForm: string[] = [];
+  dataIdForEdit: number = 0;
+
+  dataIsLive$: Observable<Order> = new Observable
 
   constructor(
+    private router: Router,
     private dataService: DataService,
     private formService: FormService
   ) { }
 
   ngOnInit(): void {
-    this.getDataForForm('order', 'customer', 'customerID', 'product', 'productID')
-    this.formValues$.subscribe(data => this.createControls(data))
+    // Get the right template for the form from url 
+    this.dataIdForEdit = Number(this.router.url.split('/')[2])
+    this.setUpCorrectForm(this.router.url)
+
+    // Create the form
+    // this.formValues$.subscribe(data => this.createControls(data))
   }
 
   // Creating FormControls for validation
   createControls(givenData: Bill | Product | Customer | Order): void {
+    console.log(givenData)
 
     this.fields.forEach(field => {
+      console.log()
       const control = new FormControl(givenData[field.key], field.validators);
+      console.log(givenData[field.key])
       this.baseFormGroup.addControl(field.key, control);
     });
+
   }
 
   onSubmit() { }
@@ -50,6 +61,37 @@ export class EditComponent implements OnInit {
 
   }
 
+  // Method to get the right template for the form from url
+  setUpCorrectForm(currentRoute: string) {
+    const currentForm = currentRoute.split('/')[1]
+    switch (currentForm) {
+      case 'edit-bill': {
+        this.fields = this.formService.billEditorFormFields;
+        this.getDataForForm('bill', 'order', 'orderID')
+      }
+        break;
+      case 'edit-customer': {
+        this.fields = this.formService.customerEditorFormFields;
+        this.getDataForForm('customer', 'address', 'address')
+      }
+        break;
+      case 'edit-order': {
+        this.fields = this.formService.orderEditorFormFields;
+        this.getDataForForm('order', 'customer', 'customerID', 'product', 'productID')
+      }
+        break;
+      case 'edit-product': {
+        this.fields = this.formService.productEditorFormFields;
+        this.getDataForForm('product', 'category', 'catID')
+
+        console.log('imhere')
+      }
+        break;
+      default: console.error('Invalid route')
+    }
+  }
+
+  // Method to get the data from the server for the forms
   getDataForForm(
     entityOne: string,
     entityTwo?: string,
@@ -59,7 +101,7 @@ export class EditComponent implements OnInit {
 
     // If there is only one valid parameter for the one entity
     if (!entityTwo && !idTwoFromOne && !entityThree && !idThreeFromOne) {
-      this.formValues$ = this.dataService.get(this.dataIdForEdit, entityOne)
+      this.dataIsLive$ = this.dataService.get(this.dataIdForEdit, entityOne)
     }
 
     // Three valid parameters for two entity

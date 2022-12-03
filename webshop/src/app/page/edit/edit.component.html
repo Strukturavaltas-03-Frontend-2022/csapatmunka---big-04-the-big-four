@@ -1,5 +1,5 @@
 <div class="col-12">
-  <form *ngIf="formValues$" [formGroup]="baseFormGroup" (ngSubmit)="onSubmit()" style="max-width: 400px;"
+  <form *ngIf="dataIsLive$" [formGroup]="baseFormGroup" (ngSubmit)="onSubmit()" style="max-width: 400px;"
     class="mx-auto">
     <div *ngFor="let field of fields" class="form-group">
       <div>
@@ -17,8 +17,7 @@
             [class]="field.type | tagToBootstrapClass">
 
         </ng-container>
-        <div *ngIf="baseFormGroup.controls[field.key].invalid" class="error-message">
-          {{field.errorMessage}}
+        <div *ngIf="baseFormGroup.controls[field.key].invalid">
         </div>
       </div>
     </div>
