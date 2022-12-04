@@ -9,9 +9,10 @@ import { DataService } from 'src/app/service/data.service';
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
-  styleUrls: ['./product.component.scss']
+  styleUrls: ['./product.component.scss'],
 })
 export class ProductComponent {
+
 
   productsList:ProductServer[]=[]
   categoryList:Category[]=[]
@@ -21,13 +22,17 @@ export class ProductComponent {
   
 
 
+
   columns = this.config.productTableColumns;
 
+
   constructor(
+
     private dataService:  DataService,
     private config: ConfigService,
     private _router: Router
   ) { }
+
 
   ngOnInit(): void {
    this.updateCombinedList()
@@ -62,6 +67,7 @@ export class ProductComponent {
 
   }
 
+
   onSelect( product:  ProductDisp): void {
     this._router.navigateByUrl(`/edit-product/${product.id}`)
    
@@ -71,5 +77,6 @@ export class ProductComponent {
     this.dataService.delete( product.id, 'product').subscribe(
       () => this.updateCombinedList(),
     );
+
   }
 }
