@@ -22,9 +22,12 @@ export class DataTableComponent<T extends { [x: string]: any }>
   sortKey: string = 'name';
   sortDirection: number = 1;
 
+  //filter
   phrase: string = '';
-
   filterKey: string = '';
+
+  //pagination
+  page: number = 1;
 
   // Table button operations
   @Output() onSelect: EventEmitter<T> = new EventEmitter();
