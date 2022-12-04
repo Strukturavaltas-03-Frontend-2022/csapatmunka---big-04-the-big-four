@@ -48,6 +48,7 @@
             let row of list
               | filter : phrase : filterKey
               | sorter : sortKey : sortDirection
+              | paginate : { itemsPerPage: 20, currentPage: page }
           "
         >
           <td *ngFor="let col of columns">
@@ -78,4 +79,8 @@
       </tbody>
     </table>
   </div>
+  <pagination-controls
+    (pageChange)="page = $event"
+    class="col-md-6 offset-md-3"
+  ></pagination-controls>
 </div>
