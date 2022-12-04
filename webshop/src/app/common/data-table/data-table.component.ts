@@ -9,10 +9,11 @@ export interface ITableCol {
 @Component({
   selector: 'app-data-table',
   templateUrl: './data-table.component.html',
-  styleUrls: ['./data-table.component.scss']
+  styleUrls: ['./data-table.component.scss'],
 })
-export class DataTableComponent<T extends { [x: string]: any }> implements OnInit {
-
+export class DataTableComponent<T extends { [x: string]: any }>
+  implements OnInit
+{
   // Dynamic table components
   @Input() list: T[] = [];
   @Input() columns: ITableCol[] = [];
@@ -21,14 +22,17 @@ export class DataTableComponent<T extends { [x: string]: any }> implements OnIni
   sortKey: string = 'name';
   sortDirection: number = 1;
 
+  phrase: string = '';
+
+  filterKey: string = '';
+
   // Table button operations
   @Output() onSelect: EventEmitter<T> = new EventEmitter();
   @Output() onDelete: EventEmitter<T> = new EventEmitter();
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   // Table button methods
   raiseSelect(row: T): void {
@@ -41,10 +45,10 @@ export class DataTableComponent<T extends { [x: string]: any }> implements OnIni
 
   sortRequest(key: string): void {
     if (key === this.sortKey) {
-      this.sortDirection *= -1
+      this.sortDirection *= -1;
     } else {
-      this.sortDirection = 1
+      this.sortDirection = 1;
     }
-    this.sortKey = key
+    this.sortKey = key;
   }
 }
