@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Address } from 'src/app/model/address';
 import { Customer, CustomerDisp, CustomerServer } from 'src/app/model/customer';
@@ -27,6 +28,7 @@ export class CustomerComponent {
   constructor(
     private dataService:  DataService,
     private config: ConfigService,
+    private _router: Router
   ) { }
 
   ngOnInit(): void {
@@ -37,8 +39,9 @@ export class CustomerComponent {
     this.Customers$.subscribe(
       data=>{this.customerList=data
              this.Address$.subscribe(
-              data=>{this.addressList=data
-                     this.CombineData()})})
+              data=>{this.addressList=data;
+                     this.combinedList=[];
+                     this.CombineData();})})
 
   }
 
@@ -62,28 +65,13 @@ export class CustomerComponent {
     })
   }
 
-    /*id: number = 0;
-  first_name: string = "";
-  last_name: string = "";
-  email: string = "";
-  address: Address = new Address();
-  active: boolean = true;*/
-
-  /*    id: number = 0;
-    zip: number = 0;
-    country: string = "";
-    city: string = "";
-    street: string = "";
-    notes: string = "";*/
-
   onSelect( customer:  CustomerDisp): void {
-    console.log( customer);
+     this._router.navigateByUrl(`/edit-customer/${customer.id}`)
    
   }
 
   onDelete(customer:  CustomerDisp): void {
     this.dataService.delete( customer.id, 'customer').subscribe(
-      () => this.Customers$ = this.dataService.getAll('customer'),
-    );
+      () => this.updateCombinedList());
   }
 }
