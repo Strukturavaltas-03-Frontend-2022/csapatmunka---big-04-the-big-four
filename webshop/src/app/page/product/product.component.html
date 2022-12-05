@@ -1,7 +1,7 @@
 <div class="row">
-    <div *ngIf="list$ | async as list" class="col-12">
+    <div *ngIf="combinedList" class="col-12">
        <app-data-table
-        [list]="list"
+        [list]="combinedList"
         [columns]="columns"
         (onSelect)="onSelect($event)"
         (onDelete)="onDelete($event)"

@@ -3,6 +3,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 import { AppComponent } from './app.component';
 import { SidebarComponent } from './common/sidebar/sidebar.component';
@@ -13,7 +14,7 @@ import { ProductComponent } from './page/product/product.component';
 import { CustomerComponent } from './page/customer/customer.component';
 import { OrderComponent } from './page/order/order.component';
 import { BillComponent } from './page/bill/bill.component';
-import { EditComponent } from './page/edit/edit.component'
+import { EditComponent } from './page/edit/edit.component';
 
 import { FilterPipe } from './common/data-table/pipe/filter.pipe';
 import { SorterPipe } from './common/data-table/pipe/sorter.pipe';
@@ -21,7 +22,6 @@ import { SorterPipe } from './common/data-table/pipe/sorter.pipe';
 import { TagToBootstrapClassPipe } from './pipe/tag-to-bootstrap-class.pipe';
 
 import { TableColSumPipe } from './common/data-table/pipe/table-col-sum.pipe';
-
 
 @NgModule({
   declarations: [
@@ -40,8 +40,7 @@ import { TableColSumPipe } from './common/data-table/pipe/table-col-sum.pipe';
 
     TagToBootstrapClassPipe,
 
-    TableColSumPipe
-
+    TableColSumPipe,
   ],
   imports: [
     BrowserModule,
@@ -49,8 +48,9 @@ import { TableColSumPipe } from './common/data-table/pipe/table-col-sum.pipe';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    NgxPaginationModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
