@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 export interface ITableCol {
   [x: string]: any;
@@ -33,11 +34,14 @@ export class DataTableComponent<T extends { [x: string]: any }>
   @Output() onSelect: EventEmitter<T> = new EventEmitter();
   @Output() onDelete: EventEmitter<T> = new EventEmitter();
 
+  //Toaster
+  toastr:ToastrService= inject(ToastrService)
+
   constructor() {}
 
   ngOnInit(): void {}
 
-  // Table button methods
+    // Table button methods
   raiseSelect(row: T): void {
     this.onSelect.emit(row);
   }
@@ -53,5 +57,12 @@ export class DataTableComponent<T extends { [x: string]: any }>
       this.sortDirection = 1;
     }
     this.sortKey = key;
+  }
+  //Toaster
+  showSuccess() {
+    this.toastr.success('Hello world!', 'Toastr fun!', {timeOut:6000,});
+  }
+  showError() {
+   this.toastr.error('everything is broken', 'Major Error');
   }
 }
