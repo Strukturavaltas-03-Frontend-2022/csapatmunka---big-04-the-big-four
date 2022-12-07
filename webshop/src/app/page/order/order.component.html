@@ -1,10 +1,10 @@
 <div class="row">
-    <div *ngIf="combinedList" class="col-12">
-       <app-data-table
-        [list]="combinedList"
-        [columns]="columns"
-        (onSelect)="onSelect($event)"
-        (onDelete)="onDelete($event)"
-      ></app-data-table>
-    </div>
+  <div *ngIf="combinedList" class="col-12">
+    <app-data-table
+      [list]="combinedList"
+      [columns]="columns"
+      (onSelect)="onSelect($event)"
+      (onDelete)="onDelete($event)"
+    ></app-data-table>
   </div>
+</div>
