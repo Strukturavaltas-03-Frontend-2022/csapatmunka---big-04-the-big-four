@@ -15,15 +15,19 @@ import { DataService } from 'src/app/service/data.service';
 })
 export class HomeComponent implements OnInit {
 
+  openOrders: number = 0;
   orderList: OrderServer[] = []
   orders$: Observable<OrderServer[]> = this.dataService.getAll('order');
 
+  activeProducts: number = 0;
   productsList: ProductServer[] = []
   products$: Observable<ProductServer[]> = this.dataService.getAll('product');
 
+  activeCustomers: number = 0;
   customerList: CustomerServer[] = []
   Customers$: Observable<CustomerServer[]> = this.dataService.getAll('customer');
 
+  unpaidSum:string="";
   billList: BillServer[] = []
   bills$: Observable<BillServer[]> = this.dataService.getAll('bill');
 
@@ -36,6 +40,7 @@ export class HomeComponent implements OnInit {
   constructor(private dataService: DataService,) { }
 
   ngOnInit(): void {
+    this.getAllAll()
   }
 
   getAllAll(): void {
@@ -57,6 +62,7 @@ export class HomeComponent implements OnInit {
                         this.Address$.subscribe(
                           data => {
                             this.addressList = data
+                            this.dataSummary()
                           })
                       })
                   })
@@ -65,5 +71,51 @@ export class HomeComponent implements OnInit {
       })
 
   }
+
+
+
+
+  dataSummary(): void {
+    //aktív termékek
+    let accumulator: number = 0;
+    this.productsList.forEach(item => { if (item.active) { accumulator++ } });
+    this.activeProducts = accumulator;
+    //aktív felhasználók
+    accumulator = 0;
+    this.customerList.forEach(item => { if (item.active) { accumulator++ } });
+    this.activeCustomers = accumulator;
+    //ki nem fizetett rendelések
+    accumulator = 0;
+    this.orderList.forEach(item => { if (item.status == "new") { accumulator++ } });
+    this.openOrders = accumulator;
+    //Még nem fizetett számlák összege
+    accumulator = 0;
+    this.billList.forEach(item => { 
+      if (item.status == "new") { 
+        let currOrder=this.getOrder(item.orderID)
+        let currProduct=this.getProduct(currOrder.productID)
+        accumulator=accumulator+currProduct.price*item.amount
+       } });
+    this.unpaidSum = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(accumulator);
+
+  }
+
+
+  getProduct(productID: number): ProductServer {
+    let idx = this.productsList.findIndex((element) => element.id == productID)
+    if (this.productsList[idx])
+      return this.productsList[idx]
+    else
+      return new ProductServer()
+  }
+
+  getOrder(orderID: number): OrderServer {
+    let idx = this.orderList.findIndex((element) => element.id == orderID)
+    if (this.orderList[idx])
+      return this.orderList[idx]
+    else
+      return new OrderServer()
+  }
+
 
 }
