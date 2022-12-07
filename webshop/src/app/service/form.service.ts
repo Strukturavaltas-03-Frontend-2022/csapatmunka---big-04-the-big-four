@@ -151,29 +151,17 @@ export class FormService {
 
   orderEditorFormFields: FormField[] = [
     {
-      label: 'CustomerID',
-      key: 'customerID',
-      validators: [
-        Validators.required,
-      ],
-    },
-    {
       label: 'Customer',
-      key: 'customer',
-      validators: [
-        Validators.required,
-      ],
-    },
-    {
-      label: 'ProductID',
-      key: 'productID',
+      key: 'customerID',
+      fieldType: 'select',
       validators: [
         Validators.required,
       ],
     },
     {
       label: 'Product',
-      key: 'product',
+      key: 'productID',
+      fieldType: 'select',
       validators: [
         Validators.required,
       ],
@@ -199,11 +187,7 @@ export class FormService {
         Validators.required,
       ]
     },
-    {
-      label: 'Active',
-      key: 'active',
-      type: 'checkbox',
-    },
+
   ];
 
   billEditorFormFields: FormField[] = [

@@ -12,6 +12,7 @@ import { Product } from 'src/app/model/product';
 import { Category } from 'src/app/model/category';
 import { Address } from 'src/app/model/address';
 
+
 @Component({
   selector: 'app-edit',
   templateUrl: './edit.component.html',
@@ -22,7 +23,7 @@ export class EditComponent implements OnInit {
 
   currentFormSection: string = ''
 
-  // Common variables for creating forms
+  // Common variables for creating forms -------------------------------------
   baseFormGroup: FormGroup = new FormGroup({});
   fields: FormField[] = [new FormField]
   dataIdForEdit: number = Number(this.router.url.split('/')[2]);
@@ -30,6 +31,8 @@ export class EditComponent implements OnInit {
   // Product form ------------------------------------------------------------
   currentProduct: Product | null = null
   categorySelection: Category[] = []
+
+  keyNameSwitchHappened: boolean = false
 
   // Product data combiner
   combinedProductData = combineLatest({
@@ -40,7 +43,6 @@ export class EditComponent implements OnInit {
   // Customer form ------------------------------------------------------------
   combinedCustomerFormGroup: FormGroup = new FormGroup({});
   addressFormGroup: FormGroup = new FormGroup({});
-  customerFormGroup: FormGroup = new FormGroup({});
   customerFields: FormField[] = [];
   addressFields: FormField[] = this.formService.addressEditorFormFields;
   currentCustomer: Customer | null = null
@@ -50,9 +52,7 @@ export class EditComponent implements OnInit {
 
 
   // Order form --------------------------------------------------------------
-
   currentOrder: Order | null = null
-
   customerSelection: Customer[] = [];
   productSelection: Product[] = [];
 
@@ -78,16 +78,19 @@ export class EditComponent implements OnInit {
   // Customer Form
   createOrderForm() {
     if (this.dataIdForEdit == 0) {
-      this.dataService.getAll('category').subscribe(data => {
-        this.categorySelection = data;
-        this.createControls(this.currentProduct, this.fields)
-      })
+      this.combinedOrderData.subscribe(serverData => {
+        this.currentOrder = serverData.mainData
+        this.customerSelection = serverData.subData1;
+        this.productSelection = serverData.subData2;
+        this.createControls(this.currentOrder, this.fields,)
+      });
     } else {
       this.combinedOrderData.subscribe(serverData => {
-        this.currentProduct = serverData.mainData
+        this.currentOrder = serverData.mainData
         this.customerSelection = serverData.subData1;
-        this.productSelection = serverData.subData1;
-        this.createControls(this.currentProduct, this.fields,)
+        this.productSelection = serverData.subData2;
+        this.createControls(this.currentOrder, this.fields,)
+        console.log(this.customerSelection)
       });
     }
   }
@@ -148,15 +151,18 @@ export class EditComponent implements OnInit {
       givenFields.forEach(field => {
 
         // Fix problematic indexing - occurs in CustomerData
-        if (field.key == 'first_name') {
+        if (field.key == 'first_name' || field.key == 'firstName') {
           field.key = 'firstName'
           givenData[field.key] = givenData['first_name']
-        } else if (field.key == 'last_name') {
+        } else if (field.key === 'last_name' || field.key == 'lastName') {
           field.key = 'lastName'
           givenData[field.key] = givenData['last_name']
         }
 
-        // If there is an address, great a new FormGroup with its fields
+        // Delay form creation until the aforementioned problematic indexing is fixed
+        this.keyNameSwitchHappened = true
+
+        // If there is an address, create its FormControls and add them to addressFormGroup
         if (field.key == 'address') {
           this.addressFormGroup = new FormGroup({})
           this.addressFields.forEach(addressField => {
@@ -167,15 +173,15 @@ export class EditComponent implements OnInit {
           })
 
         } else {
-          // 
+          // Create FormControl for any other field and add it to main FormGroup
           const control = new FormControl(givenData[field.key], field.validators);
           this.baseFormGroup.addControl(field.key, control);
         }
       })
+      // Add the addressFormGroup to the main FormGroup, with 'address' key
       this.baseFormGroup.addControl('address', this.addressFormGroup)
     }
   }
-
 
   // Method to get the right template for the form from url
   setUpCorrectForm(currentRoute: string) {
@@ -214,7 +220,9 @@ export class EditComponent implements OnInit {
       const product = this.baseFormGroup.value
       product.id = Number(this.dataIdForEdit)
       product.catID = Number(product.catID);
+      delete product.address
       this.dataService.update(product, 'product').subscribe(data => console.log(data))
+
 
     } else if (this.currentFormSection == 'customer') {
 
@@ -229,6 +237,15 @@ export class EditComponent implements OnInit {
       delete Object.assign(customer, { ['last_name']: customer['lastName'] })['lastName'];
 
       this.dataService.update(customer, 'customer').subscribe(data => console.log(data))
+
+
+    } else if (this.currentFormSection == 'order') {
+
+      const order = this.baseFormGroup.value
+      order.id = Number(this.dataIdForEdit)
+      delete order.address
+      this.dataService.update(order, 'order').subscribe(data => console.log(data))
+
     }
   }
 
