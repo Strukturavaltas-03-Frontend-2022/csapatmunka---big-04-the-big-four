@@ -6,6 +6,16 @@
   }
 }
 
-.table__tr--sum{
+.table__tr--sum {
   background-color: rgb(200, 200, 200);
+}
+
+.input-group {
+  select {
+    cursor: pointer;
+  }
+}
+
+#toast-container > div {
+  opacity:1;
 }
