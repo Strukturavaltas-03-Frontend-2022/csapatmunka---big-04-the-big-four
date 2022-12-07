@@ -14,7 +14,7 @@ export class ConfigService {
     { title: 'ID', key: 'id' },
     { title: 'Name', key: 'name' },
     { title: 'Type', key: 'type' },
-    { title: 'CatID', key: 'catID' },
+    { title: 'Category', key: 'catID' },
     { title: 'Description', key: 'description' },
     { title: 'Price', key: 'price' },
     { title: 'Featured', key: 'featured' },
@@ -32,15 +32,15 @@ export class ConfigService {
 
   orderTableColumns: ITableColumn[] = [
     { title: 'ID', key: 'id' },
-    { title: 'CustomerID', key: 'customerID' },
-    { title: 'ProductID', key: 'productID' },
+    { title: 'Customer', key: 'customerID' },
+    { title: 'Product', key: 'productID' },
     { title: 'Amount', key: 'amount' },
     { title: 'Status', key: 'status' },
   ];
 
   billTableColumns: ITableColumn[] = [
     { title: 'ID', key: 'id' },
-    { title: 'orderID', key: 'orderID' },
+    { title: 'Order', key: 'orderID' },
     { title: 'Amount', key: 'amount' },
     { title: 'Status', key: 'status' },
   ];
