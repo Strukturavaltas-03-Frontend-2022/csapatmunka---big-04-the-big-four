@@ -160,6 +160,58 @@
   </form>
 </div>
 
+<!-- Bill Form -->
+<div class="col-12" *ngIf="currentFormSection=='bill'">
+  <form *ngIf="currentBill" [formGroup]="baseFormGroup" (ngSubmit)="onUpdate()" style="max-width: 400px;"
+    class="mx-auto">
+    <div *ngFor="let field of fields" class="form-group">
+      <div *ngIf="customerSelection != undefined">
+
+        <label>{{ field.label }}</label>
+
+        <ng-container [ngSwitch]="field.fieldType">
+
+          <ng-container *ngSwitchCase="'select'" [ngSwitch]="field.key">
+
+            <select *ngSwitchCase="'orderID'" [formControlName]="field.key" [name]="field.key" class="form-select">
+              <option *ngFor="let opt of orderSelection" [value]="opt.id">
+                {{opt['id']}}&nbsp;&nbsp;|&nbsp;&nbsp;
+                {{customerSelection | idToString : opt['customerID']: 'customer'}}
+                {{productSelection| idToString : opt['productID']: 'product'}}
+                Amount: {{opt['amount']}},
+                Status: {{opt['status']}}
+              </option>
+            </select>
+
+            <select *ngSwitchCase="'status'" [formControlName]="field.key" [name]="field.key" class="form-select">
+              <option *ngFor="let opt of field.selectOptions" [value]="opt.value"> {{opt.text}}</option>
+            </select>
+
+          </ng-container>
+
+          <textarea *ngSwitchCase="'textarea'" [formControlName]="field.key" [name]="field.key"
+            class="form-control"></textarea>
+
+          <div *ngSwitchCase="'checkbox'" class="form-check">
+            <input [formControlName]="field.key" [name]="field.key" type="checkbox" class="form-check-input">
+          </div>
+
+          <input *ngSwitchDefault [formControlName]="field.key" [type]="field.type" [name]="field.key"
+            class="form-control">
+
+        </ng-container>
+
+      </div>
+    </div>
+
+    <div class="d-grid gap-2 mt-3">
+      <button [disabled]="baseFormGroup.invalid" class="btn btn-primary" type="submit">
+        update user </button>
+    </div>
+
+  </form>
+</div>
+
 <!-- 
     <div *ngIf="addressFormGroup">
       <form [formGroup]="combinedCustomerFormGroup">

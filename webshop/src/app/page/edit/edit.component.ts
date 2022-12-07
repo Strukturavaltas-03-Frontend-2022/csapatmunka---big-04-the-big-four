@@ -28,7 +28,7 @@ export class EditComponent implements OnInit {
   fields: FormField[] = [new FormField]
   dataIdForEdit: number = Number(this.router.url.split('/')[2]);
 
-  // Product form ------------------------------------------------------------
+  // Product form variables----------------------------------------------------
   currentProduct: Product | null = null
   categorySelection: Category[] = []
 
@@ -40,7 +40,7 @@ export class EditComponent implements OnInit {
     subData: this.dataService.getAll('category'),
   })
 
-  // Customer form ------------------------------------------------------------
+  // Customer form variables---------------------------------------------------
   combinedCustomerFormGroup: FormGroup = new FormGroup({});
   addressFormGroup: FormGroup = new FormGroup({});
   customerFields: FormField[] = [];
@@ -51,9 +51,9 @@ export class EditComponent implements OnInit {
   addressId: number = 0;
 
 
-  // Order form --------------------------------------------------------------
+  // Order form variables------------------------------------------------------
   currentOrder: Order | null = null
-  customerSelection: Customer[] = [];
+  customerSelection: Customer[] | null = null;
   productSelection: Product[] = [];
 
   // Order data combiner
@@ -63,23 +63,57 @@ export class EditComponent implements OnInit {
     subData2: this.dataService.getAll('product'),
   })
 
+  // Bill form variables------------------------------------------------------
+  currentBill: Bill | null = null
+  orderSelection: Customer[] = [];
+  // customer & productSelection at order form segment
+
+  // Bill data combiner
+  combinedBillData = combineLatest({
+    mainData: this.dataService.get(this.dataIdForEdit, 'bill'),
+    subData1: this.dataService.getAll('order'),
+    subData2: this.dataService.getAll('customer'),
+    subData3: this.dataService.getAll('product'),
+  })
+
   constructor(
     private router: Router,
     private dataService: DataService,
     private formService: FormService,
-
-    private fb: FormBuilder
   ) { }
 
   ngOnInit(): void {
     this.setUpCorrectForm(this.router.url)
   }
 
-  // Customer Form
+  // Bill Form
+  createBillForm() {
+    if (this.dataIdForEdit == 0) {
+      this.combinedBillData.subscribe(serverData => {
+        this.currentBill = new Bill
+        this.orderSelection = serverData.subData2;
+        this.customerSelection = serverData.subData2;
+        this.productSelection = serverData.subData3;
+        this.createControls(this.currentBill, this.fields,)
+      });
+    } else {
+      this.combinedBillData.subscribe(serverData => {
+        this.currentBill = serverData.mainData
+        this.orderSelection = serverData.subData1;
+        this.customerSelection = serverData.subData2;
+        this.productSelection = serverData.subData3;
+        this.createControls(this.currentBill, this.fields,)
+        console.log(this.customerSelection)
+
+      });
+    }
+  }
+
+  // Order Form
   createOrderForm() {
     if (this.dataIdForEdit == 0) {
       this.combinedOrderData.subscribe(serverData => {
-        this.currentOrder = serverData.mainData
+        this.currentOrder = new Order
         this.customerSelection = serverData.subData1;
         this.productSelection = serverData.subData2;
         this.createControls(this.currentOrder, this.fields,)
@@ -90,7 +124,6 @@ export class EditComponent implements OnInit {
         this.customerSelection = serverData.subData1;
         this.productSelection = serverData.subData2;
         this.createControls(this.currentOrder, this.fields,)
-        console.log(this.customerSelection)
       });
     }
   }
@@ -190,6 +223,7 @@ export class EditComponent implements OnInit {
       case 'edit-bill': {
         this.fields = this.formService.billEditorFormFields;
         this.currentFormSection = 'bill'
+        this.createBillForm()
       }
         break;
       case 'edit-customer': {
@@ -245,6 +279,14 @@ export class EditComponent implements OnInit {
       order.id = Number(this.dataIdForEdit)
       delete order.address
       this.dataService.update(order, 'order').subscribe(data => console.log(data))
+
+    }
+
+    else if (this.currentFormSection == 'bill') {
+      const bill = this.baseFormGroup.value
+      bill.id = Number(this.dataIdForEdit)
+      delete bill.address
+      this.dataService.update(bill, 'bill').subscribe(data => console.log(data))
 
     }
   }

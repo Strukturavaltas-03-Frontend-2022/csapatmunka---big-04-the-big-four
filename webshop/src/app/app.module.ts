@@ -27,7 +27,8 @@ import { TableColSumPipe } from './common/data-table/pipe/table-col-sum.pipe';
 import { DefaultSelectedPipe } from './pipe/default-selected.pipe';
 import { HasCorrectKeyPipe } from './pipe/has-correct-key.pipe';
 import { registerLocaleData } from '@angular/common';
-import localeDe from '@angular/common/locales/de'
+import localeDe from '@angular/common/locales/de';
+import { IdToStringPipe } from './pipe/id-to-string.pipe'
 
 
 registerLocaleData(localeDe, 'de')
@@ -50,7 +51,8 @@ registerLocaleData(localeDe, 'de')
     TagToBootstrapClassPipe,
     TableColSumPipe,
     DefaultSelectedPipe,
-    HasCorrectKeyPipe
+    HasCorrectKeyPipe,
+    IdToStringPipe
   ],
   imports: [
     BrowserModule,

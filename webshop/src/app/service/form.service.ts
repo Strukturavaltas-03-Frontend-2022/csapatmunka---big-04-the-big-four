@@ -192,11 +192,12 @@ export class FormService {
 
   billEditorFormFields: FormField[] = [
     {
-      label: 'ID',
-      key: 'id',
+      label: 'Order',
+      key: 'orderID',
+      fieldType: 'select',
       validators: [
         Validators.required,
-      ],
+      ]
     },
     {
       label: 'Amount',
@@ -207,47 +208,17 @@ export class FormService {
       ],
     },
     {
-      label: 'Order ID',
-      key: 'orderID',
-      validators: [
-        Validators.required,
-      ]
-    },
-    {
-      label: 'Customer ID',
-      key: 'order',
-      originalKey: 'customerID',
-      subKey: 'order_customer_ID',
-      validators: [
-        Validators.required,
-      ]
-    },
-    {
-      label: 'Product ID',
-      key: 'order',
-      originalKey: 'productID',
-      subKey: 'order_product_ID',
-      validators: [
-        Validators.required,
-      ]
-    },
-
-    {
       label: 'Status',
       key: 'status',
       fieldType: 'select',
       selectOptions: [
         { text: 'New', value: 'new' },
+        { text: 'Shipped', value: 'shipped' },
         { text: 'Paid', value: 'paid' },
       ],
       validators: [
         Validators.required,
-      ]
-    },
-    {
-      label: 'Active',
-      key: 'active',
-      type: 'checkbox',
+      ],
     },
   ];
 
