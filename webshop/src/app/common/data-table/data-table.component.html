@@ -1,4 +1,5 @@
-<div class="row">
+
+<div class="row mt-3 mb-4">
   <div class="input-group col-12 input-group-outline">
     <div>
       <select [(ngModel)]="filterKey" class="form-select">
@@ -34,11 +35,11 @@
               | filter : phrase : filterKey
               | sorter : sortKey : sortDirection
               | paginate : { itemsPerPage: 20, currentPage: page }
-          ">
+        >
             <td *ngFor="let col of columns">
               <h6 class="mb-0 text-sm"> {{ row[col.key] }}</h6>
             </td>
-            <td>
+             <td>
               <div class="btn-group">
                 <button (click)="showSuccess()" (click)="raiseSelect(row)" class="btn btn-info">
                   <i class="fa fa-edit"></i>
@@ -49,10 +50,25 @@
               </div>
             </td>
           </tr>
-
-        </tbody>
-      </table>
-    </div>
-    <pagination-controls (pageChange)="page = $event" class="col-md-6 offset-md-3"></pagination-controls>
+        <tr class="table__tr--sum">
+          <td>{{ "Σ " + list.length + " db" }}</td>
+          <td>{{ "" }}</td>
+          <td>{{ "" }}</td>
+          <td>{{ "" }}</td>
+          <td>{{ "" }}</td>
+          <td>{{ list | tableColSum : "price" }}</td>
+          <td>{{ "" }}</td>
+          <td>{{ "" }}</td>
+          <td>{{ "" }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
+  <pagination-controls
+    (pageChange)="page = $event"
+    class="col-md-6 offset-md-3 mt-5"
+  ></pagination-controls>
 </div>
+
+
+
