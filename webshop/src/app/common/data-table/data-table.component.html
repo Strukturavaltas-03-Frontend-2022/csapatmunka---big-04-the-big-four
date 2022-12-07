@@ -1,44 +1,99 @@
-<div class="row">
-    <div class="col-12">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th *ngFor="let col of columns" (click)="sortRequest(col.key)" class="header__sort">
-                        {{ col.title }}
-                        <i *ngIf="col.key === sortKey && sortDirection == 1" class="fa fa-sort-asc"></i>
-                        <i *ngIf="col.key === sortKey && sortDirection == -1" class="fa fa-sort-desc"></i>
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let row of list | sorter: sortKey: sortDirection">
-                    <td *ngFor="let col of columns">
-                        {{ row[col.key] }}
-                    </td>
-                    <td>
-                        <div class="btn-group">
-                            <button (click)="raiseSelect(row)" class="btn btn-info">
-                                <i class="fa fa-edit"></i>
-                            </button>
-                            <button (click)="raiseDelete(row)" class="btn btn-danger">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-          <!--  <tr *ngFor="let row of list" class="table__tr--sum">
-                    <td *ngFor="let col of columns" >
-                        {{col.title}}
-                    </td>
-
-                    <td>{{list.lenght }}</td>
-                    <td>{{''}}</td>
-                    <td>{{list | tableColSum:'price'}}</td>
-                    <td>{{''}}</td>
-
-                </tr>-->
-            </tbody>
-        </table>
+<div class="row mt-2 mb-2">
+  <div class="input-group col-12 input-group-outline">
+    <div>
+      <select [(ngModel)]="filterKey" class="form-select">
+        <option value="">Search everywhere</option>
+        <option *ngFor="let col of columns" [value]="col.key">
+          {{ col.title }}
+        </option>
+      </select>
     </div>
+    <div class="mx-1 col-10">
+      <input
+        [(ngModel)]="phrase"
+        class="form-control mx-1"
+        type="text"
+        placeholder="Search..."
+      />
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <button (click)="(raiseCreate)" class="btn btn-info mt-4 ml-1 mr-2 col-12">
+    <i class="fa fa-plus"></i>
+  </button>
+  <div class="card">
+    <div class="table-responsive p-0 col-12">
+      <table class="table">
+        <thead>
+          <tr>
+            <th
+              *ngFor="let col of columns"
+              (click)="sortRequest(col.key)"
+              class="header__sort"
+            >
+              {{ col.title }}
+              <i
+                *ngIf="col.key === sortKey && sortDirection == 1"
+                class="fa fa-sort-asc"
+              ></i>
+              <i
+                *ngIf="col.key === sortKey && sortDirection == -1"
+                class="fa fa-sort-desc"
+              ></i>
+            </th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="
+              let row of list
+                | filter : phrase : filterKey
+                | sorter : sortKey : sortDirection
+                | paginate : { itemsPerPage: 20, currentPage: page }
+            "
+          >
+            <td *ngFor="let col of columns">
+              <h6 class="mb-0 text-sm">{{ row[col.key] }}</h6>
+            </td>
+            <td>
+              <div class="btn-group">
+                <button
+                  (click)="showSuccess()"
+                  (click)="raiseSelect(row)"
+                  class="btn btn-info"
+                >
+                  <i class="fa fa-edit"></i>
+                </button>
+                <button
+                  (click)="showError()"
+                  (click)="raiseDelete(row)"
+                  class="btn btn-danger"
+                >
+                  <i class="fa fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr class="table__tr--sum">
+            <td>{{ "Σ " + list.length + " db" }}</td>
+            <td>{{ "" }}</td>
+            <td>{{ "" }}</td>
+            <td>{{ "" }}</td>
+            <td>{{ "" }}</td>
+            <td>{{ list | tableColSum : "price" }}</td>
+            <td>{{ "" }}</td>
+            <td>{{ "" }}</td>
+            <td>{{ "" }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <pagination-controls
+      (pageChange)="page = $event"
+      class="col-md-6 offset-md-3 mt-5"
+    ></pagination-controls>
+  </div>
 </div>

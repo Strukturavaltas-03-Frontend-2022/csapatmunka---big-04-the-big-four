@@ -1,8 +1,11 @@
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { ToastrModule } from 'ngx-toastr';
 
 import { AppComponent } from './app.component';
 import { SidebarComponent } from './common/sidebar/sidebar.component';
@@ -13,7 +16,7 @@ import { ProductComponent } from './page/product/product.component';
 import { CustomerComponent } from './page/customer/customer.component';
 import { OrderComponent } from './page/order/order.component';
 import { BillComponent } from './page/bill/bill.component';
-import { EditComponent } from './page/edit/edit.component'
+import { EditComponent } from './page/edit/edit.component';
 
 import { FilterPipe } from './common/data-table/pipe/filter.pipe';
 import { SorterPipe } from './common/data-table/pipe/sorter.pipe';
@@ -22,7 +25,6 @@ import { TagToBootstrapClassPipe } from './pipe/tag-to-bootstrap-class.pipe';
 
 import { TableColSumPipe } from './common/data-table/pipe/table-col-sum.pipe';
 import { DefaultSelectedPipe } from './pipe/default-selected.pipe';
-
 
 @NgModule({
   declarations: [
@@ -38,16 +40,9 @@ import { DefaultSelectedPipe } from './pipe/default-selected.pipe';
     FilterPipe,
     SorterPipe,
     EditComponent,
-
     TagToBootstrapClassPipe,
-<<<<<<< HEAD
     TableColSumPipe,
     DefaultSelectedPipe
-=======
-
-    TableColSumPipe
->>>>>>> f692c4013be47f064b136751adf622e5e06a3cca
-
   ],
   imports: [
     BrowserModule,
@@ -55,8 +50,11 @@ import { DefaultSelectedPipe } from './pipe/default-selected.pipe';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    NgxPaginationModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

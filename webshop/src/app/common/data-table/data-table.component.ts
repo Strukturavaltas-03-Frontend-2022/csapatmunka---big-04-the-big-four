@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 export interface ITableCol {
   [x: string]: any;
@@ -9,10 +17,11 @@ export interface ITableCol {
 @Component({
   selector: 'app-data-table',
   templateUrl: './data-table.component.html',
-  styleUrls: ['./data-table.component.scss']
+  styleUrls: ['./data-table.component.scss'],
 })
-export class DataTableComponent<T extends { [x: string]: any }> implements OnInit {
-
+export class DataTableComponent<T extends { [x: string]: any }>
+  implements OnInit
+{
   // Dynamic table components
   @Input() list: T[] = [];
   @Input() columns: ITableCol[] = [];
@@ -21,14 +30,24 @@ export class DataTableComponent<T extends { [x: string]: any }> implements OnIni
   sortKey: string = 'name';
   sortDirection: number = 1;
 
+  //filter
+  phrase: string = '';
+  filterKey: string = '';
+
+  //pagination
+  page: number = 1;
+
   // Table button operations
   @Output() onSelect: EventEmitter<T> = new EventEmitter();
   @Output() onDelete: EventEmitter<T> = new EventEmitter();
+  @Output() onCreate: EventEmitter<T> = new EventEmitter();
 
-  constructor() { }
+  //Toaster
+  toastr: ToastrService = inject(ToastrService);
 
-  ngOnInit(): void {
-  }
+  constructor() {}
+
+  ngOnInit(): void {}
 
   // Table button methods
   raiseSelect(row: T): void {
@@ -39,12 +58,23 @@ export class DataTableComponent<T extends { [x: string]: any }> implements OnIni
     this.onDelete.emit(row);
   }
 
+  raiseCreate(): void {
+    this.onCreate.emit();
+  }
+
   sortRequest(key: string): void {
     if (key === this.sortKey) {
-      this.sortDirection *= -1
+      this.sortDirection *= -1;
     } else {
-      this.sortDirection = 1
+      this.sortDirection = 1;
     }
-    this.sortKey = key
+    this.sortKey = key;
+  }
+  //Toaster
+  showSuccess() {
+    this.toastr.success('Hello world!', 'Toastr fun!', { timeOut: 6000 });
+  }
+  showError() {
+    this.toastr.error('everything is broken', 'Major Error');
   }
 }
