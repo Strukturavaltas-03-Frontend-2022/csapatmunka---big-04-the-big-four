@@ -5,8 +5,10 @@ import { ValidatorFn, Validators } from '@angular/forms';
 export class FormField {
   label: string = '';
   key: string = '';
+  originalKey?: string = '';
+  subKey?: string = '';
   type?: string = 'text';
-  htmlTag?: string = 'input'
+  fieldType?: string = 'input'
   selectOptions?: { text: string, value: any }[];
   validators?: ValidatorFn[] = [];
   errorMessage?: string;
@@ -34,30 +36,16 @@ export class FormService {
       ],
     },
     {
-      label: 'Category',
-      key: 'category',
-      validators: [
-        Validators.required,
-      ]
-    },
-    {
-      label: 'CategoryID',
-      key: 'catID',
-      validators: [
-        Validators.required,
-      ]
-    },
-    {
       label: 'Description',
       key: 'description',
-      htmlTag: 'textarea',
+      fieldType: 'textarea',
       validators: [
         Validators.required,
       ]
     },
     {
       label: 'Price',
-      key: 'description',
+      key: 'price',
       type: 'number',
       validators: [
         Validators.required,
@@ -67,11 +55,22 @@ export class FormService {
       label: 'Featured',
       key: 'featured',
       type: 'checkbox',
+      fieldType: 'checkbox',
+
     },
     {
       label: 'Active',
       key: 'active',
       type: 'checkbox',
+      fieldType: 'checkbox',
+    },
+    {
+      label: 'Category',
+      key: 'catID',
+      fieldType: 'select',
+      validators: [
+        Validators.required,
+      ]
     },
   ];
 
@@ -99,18 +98,56 @@ export class FormService {
       ]
     },
     {
+      label: 'Active',
+      key: 'active',
+      type: 'checkbox',
+      fieldType: 'checkbox',
+    },
+    {
       label: 'Address',
       key: 'address',
+    },
+  ];
+
+  addressEditorFormFields: FormField[] = [
+    {
+      label: 'ZIP code',
+      key: 'zip',
+      type: 'number',
       validators: [
         Validators.required,
       ]
     },
     {
-      label: 'Active',
-      key: 'active',
-      type: 'checkbox',
+      label: 'Country',
+      key: 'country',
+      validators: [
+        Validators.required,
+      ]
     },
-  ];
+    {
+      label: 'City',
+      key: 'city',
+      validators: [
+        Validators.required,
+      ]
+    },
+    {
+      label: 'Street',
+      key: 'street',
+      validators: [
+        Validators.required,
+      ]
+    },
+    {
+      label: 'Notes',
+      key: 'notes',
+      fieldType: 'textarea',
+      validators: [
+        Validators.required,
+      ]
+    },
+  ]
 
   orderEditorFormFields: FormField[] = [
     {
@@ -152,7 +189,7 @@ export class FormService {
     {
       label: 'Status',
       key: 'status',
-      htmlTag: 'select',
+      fieldType: 'select',
       selectOptions: [
         { text: 'New', value: 'new' },
         { text: 'Shipped', value: 'shipped' },
@@ -171,8 +208,8 @@ export class FormService {
 
   billEditorFormFields: FormField[] = [
     {
-      label: 'Order',
-      key: 'orderID',
+      label: 'ID',
+      key: 'id',
       validators: [
         Validators.required,
       ],
@@ -186,9 +223,35 @@ export class FormService {
       ],
     },
     {
+      label: 'Order ID',
+      key: 'orderID',
+      validators: [
+        Validators.required,
+      ]
+    },
+    {
+      label: 'Customer ID',
+      key: 'order',
+      originalKey: 'customerID',
+      subKey: 'order_customer_ID',
+      validators: [
+        Validators.required,
+      ]
+    },
+    {
+      label: 'Product ID',
+      key: 'order',
+      originalKey: 'productID',
+      subKey: 'order_product_ID',
+      validators: [
+        Validators.required,
+      ]
+    },
+
+    {
       label: 'Status',
       key: 'status',
-      htmlTag: 'select',
+      fieldType: 'select',
       selectOptions: [
         { text: 'New', value: 'new' },
         { text: 'Paid', value: 'paid' },
@@ -204,97 +267,33 @@ export class FormService {
     },
   ];
 
-  constructor() { }
-
-
-  usersList: any = [
+  // Accessory fields
+  categoryEditorFormFields: FormField[] = [
     {
-      id: 1,
-      name: 'Leanne Graham',
-      username: 'Bret',
-      email: 'Sincere@april.biz',
-      address: {
-        street: 'Kulas Light',
-        suite: 'Apt. 556',
-        city: 'Gwenborough',
-        zipcode: '92998-3874',
-        geo: {
-          lat: '-37.3159',
-          lng: '81.1496',
-        },
-      },
-      phone: '1-770-736-8031 x56442',
-      website: 'hildegard.org',
-      company: {
-        name: 'Romaguera-Crona',
-        catchPhrase: 'Multi-layered client-server neural-net',
-        bs: 'harness real-time e-markets',
-      },
-      cars: [
-        { name: 'Ford', models: 'Fiesta' },
-        { name: 'BMW', models: 'X1' },
-        { name: 'Fiat', models: '100' },
-      ],
+      label: 'Category ID',
+      key: 'id',
+      validators: [
+        Validators.required,
+      ]
     },
     {
-      id: 2,
-      name: 'Ervin Howell',
-      username: 'Antonette',
-      email: 'Shanna@melissa.tv',
-      address: {
-        street: 'Victor Plains',
-        suite: 'Suite 879',
-        city: 'Wisokyburgh',
-        zipcode: '90566-7771',
-        geo: {
-          lat: '-43.9509',
-          lng: '-34.4618',
-        },
-      },
-      phone: '010-692-6593 x09125',
-      website: 'anastasia.net',
-      company: {
-        name: 'Deckow-Crist',
-        catchPhrase: 'Proactive didactic contingency',
-        bs: 'synergize scalable supply-chains',
-      },
-      cars: [
-        { name: 'Ford', models: 'Fiesta' },
-        { name: 'BMW', models: 'X2' },
-        { name: 'Fiat', models: '200' },
-      ],
+      label: 'Category Name',
+      key: 'name',
+      validators: [
+        Validators.required,
+      ]
     },
     {
-      id: 3,
-      name: 'Clementine Bauch',
-      username: 'Samantha',
-      email: 'Nathan@yesenia.net',
-      address: {
-        street: 'Douglas Extension',
-        suite: 'Suite 847',
-        city: 'McKenziehaven',
-        zipcode: '59590-4157',
-        geo: {
-          lat: '-68.6102',
-          lng: '-47.0653',
-        },
-      },
-      phone: '1-463-123-4447',
-      website: 'ramiro.info',
-      company: {
-        name: 'Romaguera-Jacobson',
-        catchPhrase: 'Face to face bifurcated interface',
-        bs: 'e-enable strategic applications',
-      },
-      cars: [
-        { name: 'Ford', models: 'Fiesta' },
-        { name: 'BMW', models: 'X3' },
-        { name: 'Fiat', models: '300' },
-      ],
-    },
+      label: 'Category Description',
+      key: 'description',
+      fieldType: 'textarea',
+      validators: [
+        Validators.required,
+      ]
+    }
   ];
 
-  fetchUsersList() {
-    return [...this.usersList];
-  }
+
+  constructor() { }
+
 }

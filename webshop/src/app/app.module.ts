@@ -21,6 +21,7 @@ import { SorterPipe } from './common/data-table/pipe/sorter.pipe';
 import { TagToBootstrapClassPipe } from './pipe/tag-to-bootstrap-class.pipe';
 
 import { TableColSumPipe } from './common/data-table/pipe/table-col-sum.pipe';
+import { DefaultSelectedPipe } from './pipe/default-selected.pipe';
 
 
 @NgModule({
@@ -38,7 +39,8 @@ import { TableColSumPipe } from './common/data-table/pipe/table-col-sum.pipe';
     SorterPipe,
     EditComponent,
     TagToBootstrapClassPipe,
-    TableColSumPipe
+    TableColSumPipe,
+    DefaultSelectedPipe
 
   ],
   imports: [

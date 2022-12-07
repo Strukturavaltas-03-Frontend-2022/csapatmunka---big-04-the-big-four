@@ -1,25 +1,145 @@
-<div class="col-12">
-  <form *ngIf="dataIsLive$" [formGroup]="baseFormGroup" (ngSubmit)="onSubmit()" style="max-width: 400px;"
+<!-- Product Form -->
+<div class="col-12" *ngIf="combinedProductData">
+  <form *ngIf="currentProduct" [formGroup]="baseFormGroup" (ngSubmit)="onUpdate()" style="max-width: 400px;"
     class="mx-auto">
     <div *ngFor="let field of fields" class="form-group">
       <div>
         <label>{{ field.label }}</label>
-        <ng-container [ngSwitch]="field.htmlTag">
-
+        <ng-container [ngSwitch]="field.fieldType">
           <select *ngSwitchCase="'select'" [formControlName]="field.key" [name]="field.key" class="form-select">
-            <option *ngFor="let opt of field.selectOptions" [value]="opt.value"> {{ opt.text }} </option>
+            <option *ngFor="let opt of categorySelection" [value]="opt.id"
+              [selected]="opt.id | defaultSelected: currentProduct[field.key]">
+              {{opt.name}}
+            </option>
           </select>
 
           <textarea *ngSwitchCase="'textarea'" [formControlName]="field.key" [name]="field.key"
             class="form-control"></textarea>
 
-          <input *ngSwitchDefault [formControlName]="field.key" [name]="field.key" [type]="field.type"
-            [class]="field.type | tagToBootstrapClass">
+          <div *ngSwitchCase="'checkbox'" class="form-check">
+            <input [formControlName]="field.key" [name]="field.key" type="checkbox" class="form-check-input">
+          </div>
+
+          <input *ngSwitchDefault [formControlName]="field.key" [type]="field.type" [name]="field.key"
+            class="form-control">
+
 
         </ng-container>
-        <div *ngIf="baseFormGroup.controls[field.key].invalid">
-        </div>
       </div>
+    </div>
+    <div class="d-grid gap-2 mt-3">
+      <button [disabled]="baseFormGroup.invalid" class="btn btn-primary" type="submit">
+        <i class="fa fa-save"></i> update user </button>
     </div>
   </form>
 </div>
+
+<!-- Customer Form -->
+<div class="col-12">
+  <form *ngIf="currentCustomer" [formGroup]="baseFormGroup" (ngSubmit)="onUpdate()" style="max-width: 400px;"
+    class="mx-auto">
+    <div *ngFor="let field of customerFields" class="form-group">
+      <div *ngIf="field.key != 'address'">
+        <div *ngIf="currentCustomer">
+          <label>{{ field.label }}</label>
+          <ng-container [ngSwitch]="field.fieldType">
+            <select *ngSwitchCase="'select'" [formControlName]="field.key" [name]="field.key" class="form-select">
+              <option *ngFor="let opt of categorySelection" [value]="opt.id"
+                [selected]="opt.id | defaultSelected: currentCustomer[field.key]">
+                {{opt.name}}
+              </option>
+            </select>
+
+            <textarea *ngSwitchCase="'textarea'" [formControlName]="field.key" [name]="field.key"
+              class="form-control"></textarea>
+
+            <div *ngSwitchCase="'checkbox'" class="form-check">
+              <input [formControlName]="field.key" [name]="field.key" type="checkbox" class="form-check-input">
+            </div>
+
+            <input *ngSwitchDefault [formControlName]="field.key" [type]="field.type" [name]="field.key"
+              class="form-control">
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <div formGroupName="address">
+
+      <div *ngFor="let field of addressFields" class="form-group">
+        <div *ngIf="customerAddress">
+          <label>{{ field.label }}</label>
+          <ng-container [ngSwitch]="field.fieldType">
+            <select *ngSwitchCase="'select'" [formControlName]="field.key" [name]="field.key" class="form-select">
+              <option *ngFor="let opt of categorySelection" [value]="opt.id"
+                [selected]="opt.id | defaultSelected: customerAddress[field.key]">
+                {{opt.name}}
+              </option>
+            </select>
+
+            <textarea *ngSwitchCase="'textarea'" [formControlName]="field.key" [name]="field.key"
+              class="form-control"></textarea>
+
+            <div *ngSwitchCase="'checkbox'" class="form-check">
+              <input [formControlName]="field.key" [name]="field.key" type="checkbox" class="form-check-input">
+            </div>
+
+            <input *ngSwitchDefault [formControlName]="field.key" [type]="field.type" [name]="field.key"
+              class="form-control">
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <div class="d-grid gap-2 mt-3">
+      <button [disabled]="baseFormGroup.invalid" class="btn btn-primary" type="submit">
+        <i class="fa fa-save"></i> update user </button>
+    </div>
+  </form>
+</div>
+
+<!-- Order Form -->
+<div class="col-12" *ngIf="combinedOrderData">
+  <form *ngIf="currentOrder" [formGroup]="baseFormGroup" (ngSubmit)="onUpdate()" style="max-width: 400px;"
+    class="mx-auto">
+    <div *ngFor="let field of fields" class="form-group">
+      <div>
+        <label>{{ field.label }}</label>
+        <ng-container [ngSwitch]="field.fieldType">
+          <select *ngSwitchCase="'select'" [formControlName]="field.key" [name]="field.key" class="form-select">
+            <option *ngFor="let opt of categorySelection" [value]="opt.id"
+              [selected]="opt.id | defaultSelected: currentOrder[field.key]">
+              {{opt.name}}
+            </option>
+          </select>
+
+          <textarea *ngSwitchCase="'textarea'" [formControlName]="field.key" [name]="field.key"
+            class="form-control"></textarea>
+
+          <div *ngSwitchCase="'checkbox'" class="form-check">
+            <input [formControlName]="field.key" [name]="field.key" type="checkbox" class="form-check-input">
+          </div>
+
+          <input *ngSwitchDefault [formControlName]="field.key" [type]="field.type" [name]="field.key"
+            class="form-control">
+
+
+        </ng-container>
+      </div>
+    </div>
+    <div class="d-grid gap-2 mt-3">
+      <button [disabled]="baseFormGroup.invalid" class="btn btn-primary" type="submit">
+        <i class="fa fa-save"></i> update user </button>
+    </div>
+  </form>
+</div>
+
+<!-- 
+    <div *ngIf="addressFormGroup">
+      <form [formGroup]="combinedCustomerFormGroup">
+        <div formGroupName="address">
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" formControlName="mynewkey" class="form-control">
+          </div>
+        </div>
+      </form>
+    </div> -->

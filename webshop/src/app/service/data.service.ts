@@ -14,28 +14,28 @@ export class DataService {
     private http: HttpClient,
   ) { }
 
-  getAll(entityName:string): Observable<any[]> {
+  getAll(entityName: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}${entityName}`);
   }
 
-  get(id: number, entityName:string): Observable<any> {
+  get(id: number, entityName: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}${entityName}/${id}`);
   }
 
-  delete(id: number, entityName:string): Observable<any> {
+  delete(id: number, entityName: string): Observable<any> {
     return this.http.delete<any>(
       `${this.apiUrl}${entityName}/${id}`
     );
   }
 
-  update(entity: any, entityName:string): Observable<any> {
+  update(entity: any, entityName: string): Observable<any> {
+    console.log(`${this.apiUrl}${entityName}/${entity.id}`)
+    console.log(entity)
     return this.http.patch<any>(
-      `${this.apiUrl}${entityName}/${entity.id}`,
-      entity
-    );
+      `${this.apiUrl}${entityName}/${entity.id}`, entity);
   }
 
-  create(entity: any, entityName:string): Observable<any> {
+  create(entity: any, entityName: string): Observable<any> {
     return this.http.post<any>(
       `${this.apiUrl}${entityName}`,
       entity
