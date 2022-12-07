@@ -38,9 +38,15 @@ import { DefaultSelectedPipe } from './pipe/default-selected.pipe';
     FilterPipe,
     SorterPipe,
     EditComponent,
+
     TagToBootstrapClassPipe,
+<<<<<<< HEAD
     TableColSumPipe,
     DefaultSelectedPipe
+=======
+
+    TableColSumPipe
+>>>>>>> f692c4013be47f064b136751adf622e5e06a3cca
 
   ],
   imports: [
