@@ -41,12 +41,13 @@ export class EditComponent implements OnInit {
   })
 
   // Customer form variables---------------------------------------------------
-  combinedCustomerFormGroup: FormGroup = new FormGroup({});
   addressFormGroup: FormGroup = new FormGroup({});
   customerFields: FormField[] = [];
   addressFields: FormField[] = this.formService.addressEditorFormFields;
   currentCustomer: Customer | null = null
   customerAddress: Address | null = null
+
+  addressControl: FormControl = new FormControl
 
   addressId: number = 0;
 
@@ -54,7 +55,7 @@ export class EditComponent implements OnInit {
   // Order form variables------------------------------------------------------
   currentOrder: Order | null = null
   customerSelection: Customer[] | null = null;
-  productSelection: Product[] = [];
+  productSelection: Product[] | null = null;
 
   // Order data combiner
   combinedOrderData = combineLatest({
@@ -65,7 +66,7 @@ export class EditComponent implements OnInit {
 
   // Bill form variables------------------------------------------------------
   currentBill: Bill | null = null
-  orderSelection: Customer[] = [];
+  orderSelection: Order[] | null = null;
   // customer & productSelection at order form segment
 
   // Bill data combiner
@@ -76,6 +77,9 @@ export class EditComponent implements OnInit {
     subData3: this.dataService.getAll('product'),
   })
 
+
+  // CONSTRUCTOR --------------------------------------------------------------
+
   constructor(
     private router: Router,
     private dataService: DataService,
@@ -84,16 +88,22 @@ export class EditComponent implements OnInit {
 
   ngOnInit(): void {
     this.setUpCorrectForm(this.router.url)
+
   }
+
+  // METHODS ------------------------------------------------------------------
 
   // Bill Form
   createBillForm() {
     if (this.dataIdForEdit == 0) {
       this.combinedBillData.subscribe(serverData => {
         this.currentBill = new Bill
-        this.orderSelection = serverData.subData2;
+        this.currentBill.status = ''
+
+        this.orderSelection = serverData.subData1;
         this.customerSelection = serverData.subData2;
         this.productSelection = serverData.subData3;
+
         this.createControls(this.currentBill, this.fields,)
       });
     } else {
@@ -103,7 +113,6 @@ export class EditComponent implements OnInit {
         this.customerSelection = serverData.subData2;
         this.productSelection = serverData.subData3;
         this.createControls(this.currentBill, this.fields,)
-        console.log(this.customerSelection)
 
       });
     }
@@ -114,8 +123,11 @@ export class EditComponent implements OnInit {
     if (this.dataIdForEdit == 0) {
       this.combinedOrderData.subscribe(serverData => {
         this.currentOrder = new Order
+        this.currentOrder.status = ''
+
         this.customerSelection = serverData.subData1;
         this.productSelection = serverData.subData2;
+
         this.createControls(this.currentOrder, this.fields,)
       });
     } else {
@@ -130,28 +142,38 @@ export class EditComponent implements OnInit {
 
   // Customer Form
   createCustomerForm() {
-    this.dataService.get(this.dataIdForEdit, 'customer').subscribe(data => {
-      this.currentCustomer = data
-      this.addressId = data.address
-      this.dataService.get(data.address, 'address').subscribe(subData => {
-        this.customerAddress = subData
-        if (this.customerAddress) {
-          if (this.dataIdForEdit == 0) {
-            this.createControls(new Customer, this.fields, this.customerAddress)
-          } else {
-            this.createControls(this.currentCustomer, this.customerFields, this.customerAddress)
+    if (this.dataIdForEdit == 0) {
+      this.currentCustomer = new Customer;
+      this.customerAddress = new Address;
+
+
+      this.createControls(this.currentCustomer, this.fields, this.customerAddress)
+
+    } else {
+      this.dataService.get(this.dataIdForEdit, 'customer').subscribe(data => {
+        this.currentCustomer = data
+        this.addressId = data.address
+        this.dataService.get(data.address, 'address').subscribe(subData => {
+          this.customerAddress = subData
+          if (this.customerAddress) {
+
+            this.createControls(this.currentCustomer, this.fields, this.customerAddress)
           };
-        }
+        })
       })
-    })
+    }
   }
+
 
   // Product Form
   createProductForm() {
     if (this.dataIdForEdit == 0) {
       this.dataService.getAll('category').subscribe(data => {
         this.categorySelection = data;
-        this.createControls(this.currentProduct, this.fields)
+        this.currentProduct = new Product
+        this.currentProduct.featured = false;
+        this.currentProduct.active = false;
+
       })
     } else {
       this.combinedProductData.subscribe(serverData => {
@@ -162,11 +184,13 @@ export class EditComponent implements OnInit {
     }
   }
 
+
   // Template - how to create nested formgroup
   // this.addressFormGroup = new FormGroup({})
   // const control = new FormControl('mynewvalue', [Validators.required]);
   // this.addressFormGroup.addControl('mynewkey', control);
   // this.combinedCustomerFormGroup.addControl('address', this.addressFormGroup)
+
 
   // Creating FormControls for validation
   createControls(
@@ -184,16 +208,19 @@ export class EditComponent implements OnInit {
       givenFields.forEach(field => {
 
         // Fix problematic indexing - occurs in CustomerData
-        if (field.key == 'first_name' || field.key == 'firstName') {
-          field.key = 'firstName'
-          givenData[field.key] = givenData['first_name']
-        } else if (field.key === 'last_name' || field.key == 'lastName') {
-          field.key = 'lastName'
-          givenData[field.key] = givenData['last_name']
-        }
+        if (this.currentFormSection == 'customer') {
 
-        // Delay form creation until the aforementioned problematic indexing is fixed
-        this.keyNameSwitchHappened = true
+          if (field.key == 'first_name' || field.key == 'firstName') {
+            field.key = 'firstName'
+            givenData[field.key] = givenData['first_name']
+          } else if (field.key === 'last_name' || field.key == 'lastName') {
+            field.key = 'lastName'
+            givenData[field.key] = givenData['last_name']
+          }
+
+          // Delay form creation until the aforementioned problematic indexing is fixed
+          this.keyNameSwitchHappened = true
+        }
 
         // If there is an address, create its FormControls and add them to addressFormGroup
         if (field.key == 'address') {
@@ -211,8 +238,29 @@ export class EditComponent implements OnInit {
           this.baseFormGroup.addControl(field.key, control);
         }
       })
-      // Add the addressFormGroup to the main FormGroup, with 'address' key
-      this.baseFormGroup.addControl('address', this.addressFormGroup)
+      // Add the addressFormGroup to the main FormGroup, with 'address' key if its the Customer Form
+      if (this.currentFormSection == 'customer') {
+        this.baseFormGroup.addControl('address', this.addressFormGroup)
+        console.log(this.baseFormGroup.get('address'))
+
+      }
+    }
+
+  }
+
+  createSimpleFormControls(
+    givenData: Bill | Product | Order | Category | null,
+    givenFields: FormField[]
+  ): void {
+
+    if (givenData == null) {
+      console.error('No data was received for form creation.')
+    } else {
+      // Loop through fields, based on givenFields ( main fields ) and add it to main FormGroup
+      givenFields.forEach(field => {
+        const control = new FormControl(givenData[field.key], field.validators);
+        this.baseFormGroup.addControl(field.key, control);
+      })
     }
   }
 
@@ -227,7 +275,7 @@ export class EditComponent implements OnInit {
       }
         break;
       case 'edit-customer': {
-        this.customerFields = this.formService.customerEditorFormFields;
+        this.fields = this.formService.customerEditorFormFields;
         this.currentFormSection = 'customer'
         this.createCustomerForm()
       }
@@ -248,47 +296,76 @@ export class EditComponent implements OnInit {
     }
   }
 
-  onUpdate() {
+  onSubmit() {
     if (this.currentFormSection == 'product') {
-
-      const product = this.baseFormGroup.value
-      product.id = Number(this.dataIdForEdit)
-      product.catID = Number(product.catID);
-      delete product.address
-      this.dataService.update(product, 'product').subscribe(data => console.log(data))
-
+      this.submitProduct(this.baseFormGroup.value)
 
     } else if (this.currentFormSection == 'customer') {
-
-      const customer = this.baseFormGroup.value
-      const address = customer.address
-      address.id = this.addressId
-      this.dataService.update(address, 'address').subscribe(data => console.log(data))
-
-      delete customer['address']
-      customer.id = Number(this.dataIdForEdit)
-      delete Object.assign(customer, { ['first_name']: customer['firstName'] })['firstName'];
-      delete Object.assign(customer, { ['last_name']: customer['lastName'] })['lastName'];
-
-      this.dataService.update(customer, 'customer').subscribe(data => console.log(data))
-
+      this.submitCustomer(this.baseFormGroup.value)
 
     } else if (this.currentFormSection == 'order') {
+      this.submitOrder(this.baseFormGroup.value)
 
-      const order = this.baseFormGroup.value
-      order.id = Number(this.dataIdForEdit)
-      delete order.address
-      this.dataService.update(order, 'order').subscribe(data => console.log(data))
-
-    }
-
-    else if (this.currentFormSection == 'bill') {
-      const bill = this.baseFormGroup.value
-      bill.id = Number(this.dataIdForEdit)
-      delete bill.address
-      this.dataService.update(bill, 'bill').subscribe(data => console.log(data))
-
+    } else if (this.currentFormSection == 'bill') {
+      this.submitCustomer(this.baseFormGroup.value)
     }
   }
 
+  submitProduct(formValues: { [x: string]: any }) {
+    const product = formValues
+    product['id'] = Number(this.dataIdForEdit)
+    product['catID'] = Number(product['catID']);
+
+    if (this.dataIdForEdit == 0) {
+      this.dataService.create(product, 'product').subscribe(data => this.router.navigate(['/', 'products']))
+    } else {
+      this.dataService.update(product, 'product').subscribe(data => this.router.navigate(['/', 'products']))
+    }
+  }
+
+  submitCustomer(formValues: { [x: string]: any }) {
+    const customer = formValues
+    const address = customer['address']
+    address.id = this.addressId
+
+    if (this.dataIdForEdit == 0) {
+      this.dataService.create(address, 'address').subscribe()
+    } else {
+      this.dataService.update(address, 'address').subscribe()
+    }
+
+    customer['address'] = this.addressId
+    customer['id'] = Number(this.dataIdForEdit)
+    delete Object.assign(customer, { ['first_name']: customer['firstName'] })['firstName'];
+    delete Object.assign(customer, { ['last_name']: customer['lastName'] })['lastName'];
+
+    if (this.dataIdForEdit == 0) {
+      this.dataService.create(customer, 'customer').subscribe(data => this.router.navigate(['/', 'customer']))
+    } else {
+      this.dataService.update(customer, 'customer').subscribe(data => this.router.navigate(['/', 'customer']))
+    }
+
+  }
+
+  submitOrder(formValues: { [x: string]: any }) {
+    const order = formValues
+    order['id'] = Number(this.dataIdForEdit)
+
+    if (this.dataIdForEdit == 0) {
+      this.dataService.create(order, 'order').subscribe(data => this.router.navigate(['/', 'order']))
+    } else {
+      this.dataService.update(order, 'order').subscribe(data => this.router.navigate(['/', 'order']))
+    }
+  }
+
+  submitBill(formValues: { [x: string]: any }) {
+    const bill = formValues
+    bill['id'] = Number(this.dataIdForEdit)
+
+    if (this.dataIdForEdit == 0) {
+      this.dataService.create(bill, 'bill').subscribe(data => this.router.navigate(['/', 'bill']))
+    } else {
+      this.dataService.update(bill, 'bill').subscribe(data => this.router.navigate(['/', 'bill']))
+    }
+  }
 }

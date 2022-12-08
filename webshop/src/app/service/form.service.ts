@@ -11,7 +11,7 @@ export class FormField {
   fieldType?: string = 'input'
   selectOptions?: { text: string, value: any }[];
   validators?: ValidatorFn[] = [];
-  errorMessage?: string;
+  myErrorMessage?: string;
 }
 
 @Injectable({
@@ -26,30 +26,38 @@ export class FormService {
       key: 'name',
       validators: [
         Validators.required,
+        Validators.pattern(/^[a-záíűőüöúóé ,.'-]{3,30}$/i),
       ],
+      myErrorMessage: `The product name must be 3-30 characters long and can't contain special characters  (except: ,.'-)`
     },
     {
       label: 'Type',
       key: 'type',
       validators: [
+        Validators.pattern(/^.{2,15}$/i),
         Validators.required,
       ],
+      myErrorMessage: 'The type must be 2-15 characters long.'
     },
     {
       label: 'Description',
       key: 'description',
       fieldType: 'textarea',
       validators: [
+        Validators.pattern(/[^0]+/),
         Validators.required,
-      ]
+      ],
+      myErrorMessage: `You can't leave this field empty.`
     },
     {
       label: 'Price',
       key: 'price',
       type: 'number',
       validators: [
+        Validators.pattern(/^(?:(?:[1-9][0-9]{0,14})(?:\.[0-9]{0,2})?|\.[0-9]+)$/),
         Validators.required,
-      ]
+      ],
+      myErrorMessage: `Max length: 15 number, and it can have decimals but no leading zeros.`
     },
     {
       label: 'Featured',
@@ -69,8 +77,10 @@ export class FormService {
       key: 'catID',
       fieldType: 'select',
       validators: [
+        Validators.pattern(/[^0]+/),
         Validators.required,
-      ]
+      ],
+      myErrorMessage: 'You must pick a status!',
     },
   ];
 
@@ -79,15 +89,19 @@ export class FormService {
       label: 'First name',
       key: 'first_name',
       validators: [
+        Validators.pattern(/^[a-záíűőüöúóé ,.'-]{2,20}$/i),
         Validators.required,
       ],
+      myErrorMessage: `The first name must be 2-30 characters long and can't contain special characters (except: ,.'-)`,
     },
     {
       label: 'Last name',
       key: 'last_name',
       validators: [
+        Validators.pattern(/^[a-záíűőüöúóé ,.'-]{2,20}$/i),
         Validators.required,
       ],
+      myErrorMessage: `The last name must be 2-30 characters long and can't contain special characters (except: ,.'-)`,
     },
     {
       label: 'Email',
@@ -95,7 +109,8 @@ export class FormService {
       validators: [
         Validators.email,
         Validators.required,
-      ]
+      ],
+      myErrorMessage: `Please provide a valid email address.`,
     },
     {
       label: 'Active',
@@ -115,29 +130,39 @@ export class FormService {
       key: 'zip',
       type: 'number',
       validators: [
+        Validators.pattern(/^[1-9][0-9]{3,4}$/i),
         Validators.required,
-      ]
+      ],
+      myErrorMessage: `ZIP code should have 4 or 5 numbers.`,
+
     },
     {
       label: 'Country',
       key: 'country',
       validators: [
+        Validators.pattern(/^[a-záíűőüöúóé ,.'-]{2,56}$/i),
         Validators.required,
-      ]
+      ],
+      myErrorMessage: `You can't leave this field empty.`,
+
     },
     {
       label: 'City',
       key: 'city',
       validators: [
+        Validators.pattern(/^[a-záíűőüöúóé ,.'-]{2,85}$/i),
         Validators.required,
-      ]
+      ],
+      myErrorMessage: `You can't leave this field empty.`,
     },
     {
       label: 'Street',
       key: 'street',
       validators: [
+        Validators.pattern(/^[a-záíűőüöúóé ,.'-]{2,50}$/i),
         Validators.required,
-      ]
+      ],
+      myErrorMessage: `You can't leave this field empty`,
     },
     {
       label: 'Notes',
@@ -145,7 +170,8 @@ export class FormService {
       fieldType: 'textarea',
       validators: [
         Validators.required,
-      ]
+      ],
+      myErrorMessage: `You can't leave this field empty.`,
     },
   ]
 
@@ -154,7 +180,9 @@ export class FormService {
       label: 'Customer',
       key: 'customerID',
       fieldType: 'select',
+      myErrorMessage: 'You must choose a customer from the list!',
       validators: [
+        Validators.pattern(/^[1-9][0-9]*$/),
         Validators.required,
       ],
     },
@@ -163,16 +191,22 @@ export class FormService {
       key: 'productID',
       fieldType: 'select',
       validators: [
+        Validators.pattern(/^[1-9][0-9]*$/),
         Validators.required,
       ],
+      myErrorMessage: 'You must choose a product from the list!',
     },
+
     {
       label: 'Amount',
       key: 'amount',
       type: 'number',
       validators: [
+        Validators.pattern(/^[1-9][0-9]*$/),
         Validators.required,
-      ]
+      ],
+      myErrorMessage: 'Amount has to be larger than 0!',
+
     },
     {
       label: 'Status',
@@ -184,8 +218,10 @@ export class FormService {
         { text: 'Paid', value: 'paid' },
       ],
       validators: [
+        Validators.pattern(/new|shipped|paid/),
         Validators.required,
-      ]
+      ],
+      myErrorMessage: 'You must pick a status!',
     },
 
   ];
@@ -196,16 +232,20 @@ export class FormService {
       key: 'orderID',
       fieldType: 'select',
       validators: [
+        Validators.pattern(/^[1-9][0-9]*$/),
         Validators.required,
-      ]
+      ],
+      myErrorMessage: 'You must choose an order from the list!',
     },
     {
       label: 'Amount',
       key: 'amount',
       type: 'number',
       validators: [
+        Validators.pattern(/^[1-9][0-9]*$/),
         Validators.required,
       ],
+      myErrorMessage: 'Amount has to be larger than 0!',
     },
     {
       label: 'Status',
@@ -217,8 +257,10 @@ export class FormService {
         { text: 'Paid', value: 'paid' },
       ],
       validators: [
+        Validators.pattern(/new|shipped|paid/),
         Validators.required,
       ],
+      myErrorMessage: 'You must pick a status!',
     },
   ];
 

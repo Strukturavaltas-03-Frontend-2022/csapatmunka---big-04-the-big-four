@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -29,8 +29,6 @@ export class DataService {
   }
 
   update(entity: any, entityName: string): Observable<any> {
-    console.log(`${this.apiUrl}${entityName}/${entity.id}`)
-    console.log(entity)
     return this.http.patch<any>(
       `${this.apiUrl}${entityName}/${entity.id}`, entity);
   }
@@ -44,3 +42,16 @@ export class DataService {
 }
 
 
+//   combinedProductData = combineLatest({
+//     product: this.getAll('product'),
+//     customer: this.getAll('customer'),
+//     address: this.getAll('address'),
+//     bill: this.getAll('bill'),
+//     order: this.getAll('order'),
+//     category: this.getAll('category'),
+//   }).pipe(map(result => result.bill.map(billItem => {
+//     billItem.order = result.order.find(orderItem => Number(orderItem.id) === Number(billItem.orderID))
+//     return billItem
+//   }))).subscribe(
+//     dataList => this.completeList$.next(dataList)
+//   )

@@ -1,7 +1,8 @@
 <!-- Product Form -->
 <div class="col-12" *ngIf="currentFormSection=='product'">
-  <form *ngIf="currentProduct" [formGroup]="baseFormGroup" (ngSubmit)="onUpdate()" style="max-width: 400px;"
+  <form *ngIf="currentProduct" [formGroup]="baseFormGroup" (ngSubmit)="onSubmit()" style="max-width: 400px;"
     class="mx-auto">
+
     <div *ngFor="let field of fields" class="form-group">
       <div>
         <label>{{ field.label }}</label>
@@ -23,13 +24,19 @@
           <input *ngSwitchDefault [formControlName]="field.key" [type]="field.type" [name]="field.key"
             class="form-control">
 
-
         </ng-container>
+
+        <div *ngIf="baseFormGroup.controls[field.key].invalid" class="error-message">
+          {{field.myErrorMessage}}
+        </div>
+
       </div>
     </div>
+
+
     <div class="d-grid gap-2 mt-3">
       <button [disabled]="baseFormGroup.invalid" class="btn btn-primary" type="submit">
-        update user </button>
+        {{dataIdForEdit | buttonText : currentFormSection}} </button>
     </div>
   </form>
 </div>
@@ -37,12 +44,15 @@
 <!-- Customer Form -->
 <div class="col-12" *ngIf="currentFormSection=='customer'">
   <div *ngIf="keyNameSwitchHappened">
-    <form [formGroup]="baseFormGroup" (ngSubmit)="onUpdate()" style="max-width: 400px;" class="mx-auto">
-      <div *ngFor="let field of customerFields" class="form-group">
+    <form [formGroup]="baseFormGroup" (ngSubmit)="onSubmit()" style="max-width: 400px;" class="mx-auto">
+
+      <div *ngFor="let field of fields" class="form-group">
         <div *ngIf="field.key != 'address'">
           <div *ngIf="currentCustomer">
             <label>{{ field.label }}</label>
+
             <ng-container [ngSwitch]="field.fieldType">
+
               <select *ngSwitchCase="'select'" [formControlName]="field.key" [name]="field.key" class="form-select">
                 <option *ngFor="let opt of categorySelection" [value]="opt.id"
                   [selected]="opt.id | defaultSelected: currentCustomer[field.key]">
@@ -59,10 +69,16 @@
 
               <input *ngSwitchDefault [formControlName]="field.key" [type]="field.type" [name]="field.key"
                 class="form-control">
+
             </ng-container>
+
+            <div *ngIf="baseFormGroup.controls[field.key].invalid" class="error-message">
+              {{field.myErrorMessage}}
+            </div>
           </div>
         </div>
       </div>
+
       <div formGroupName="address">
 
         <div *ngFor="let field of addressFields" class="form-group">
@@ -84,14 +100,17 @@
               </div>
 
               <input *ngSwitchDefault [formControlName]="field.key" [type]="field.type" [name]="field.key"
-                class="form-control">
+                class="form-control" min="0">
             </ng-container>
+            <div *ngIf=" baseFormGroup.get('address')?.get([field.key])?.invalid" class="error-message">
+              {{field.myErrorMessage}}
+            </div>
           </div>
         </div>
       </div>
       <div class="d-grid gap-2 mt-3">
         <button [disabled]="baseFormGroup.invalid" class="btn btn-primary" type="submit">
-          update user </button>
+          {{dataIdForEdit | buttonText : currentFormSection}} </button>
       </div>
     </form>
   </div>
@@ -99,7 +118,7 @@
 
 <!-- Order Form -->
 <div class="col-12" *ngIf="currentFormSection=='order'">
-  <form *ngIf="currentOrder" [formGroup]="baseFormGroup" (ngSubmit)="onUpdate()" style="max-width: 400px;"
+  <form *ngIf="currentOrder" [formGroup]="baseFormGroup" (ngSubmit)="onSubmit()" style="max-width: 400px;"
     class="mx-auto">
     <div *ngFor="let field of fields" class="form-group">
       <div>
@@ -145,16 +164,20 @@
           </div>
 
           <input *ngSwitchDefault [formControlName]="field.key" [type]="field.type" [name]="field.key"
-            class="form-control">
+            class="form-control" min="0">
 
         </ng-container>
+
+        <div *ngIf="baseFormGroup.controls[field.key].invalid" class="error-message">
+          {{field.myErrorMessage}}
+        </div>
 
       </div>
     </div>
 
     <div class="d-grid gap-2 mt-3">
       <button [disabled]="baseFormGroup.invalid" class="btn btn-primary" type="submit">
-        update user </button>
+        {{dataIdForEdit | buttonText : currentFormSection}}</button>
     </div>
 
   </form>
@@ -162,8 +185,8 @@
 
 <!-- Bill Form -->
 <div class="col-12" *ngIf="currentFormSection=='bill'">
-  <form *ngIf="currentBill" [formGroup]="baseFormGroup" (ngSubmit)="onUpdate()" style="max-width: 400px;"
-    class="mx-auto">
+  <form *ngIf="currentBill" [formGroup]="baseFormGroup" (ngSubmit)="onSubmit()" style="max-width: 400px;"
+    class="mx-auto needs-validation">
     <div *ngFor="let field of fields" class="form-group">
       <div *ngIf="customerSelection != undefined">
 
@@ -173,10 +196,11 @@
 
           <ng-container *ngSwitchCase="'select'" [ngSwitch]="field.key">
 
-            <select *ngSwitchCase="'orderID'" [formControlName]="field.key" [name]="field.key" class="form-select">
+            <select *ngSwitchCase="'orderID'" [formControlName]="field.key" [name]="field.key"
+              class="form-select monospace ">
               <option *ngFor="let opt of orderSelection" [value]="opt.id">
-                {{opt['id']}}&nbsp;&nbsp;|&nbsp;&nbsp;
-                {{customerSelection | idToString : opt['customerID']: 'customer'}}
+                {{opt['id'] | spacer}}
+                {{customerSelection | idToString : opt['customerID']: 'customer' | spacer}}
                 {{productSelection| idToString : opt['productID']: 'product'}}
                 Amount: {{opt['amount']}},
                 Status: {{opt['status']}}
@@ -197,16 +221,21 @@
           </div>
 
           <input *ngSwitchDefault [formControlName]="field.key" [type]="field.type" [name]="field.key"
-            class="form-control">
+            class="form-control " min="0">
 
         </ng-container>
 
+        <div *ngIf="baseFormGroup.controls[field.key].invalid" class="error-message">
+          {{field.myErrorMessage}}
+        </div>
+
       </div>
+
     </div>
 
     <div class="d-grid gap-2 mt-3">
       <button [disabled]="baseFormGroup.invalid" class="btn btn-primary" type="submit">
-        update user </button>
+        {{dataIdForEdit | buttonText : currentFormSection}} </button>
     </div>
 
   </form>

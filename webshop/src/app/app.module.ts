@@ -28,7 +28,9 @@ import { DefaultSelectedPipe } from './pipe/default-selected.pipe';
 import { HasCorrectKeyPipe } from './pipe/has-correct-key.pipe';
 import { registerLocaleData } from '@angular/common';
 import localeDe from '@angular/common/locales/de';
-import { IdToStringPipe } from './pipe/id-to-string.pipe'
+import { IdToStringPipe } from './pipe/id-to-string.pipe';
+import { SpacerPipe } from './pipe/spacer.pipe';
+import { ButtonTextPipe } from './pipe/button-text.pipe'
 
 
 registerLocaleData(localeDe, 'de')
@@ -52,7 +54,9 @@ registerLocaleData(localeDe, 'de')
     TableColSumPipe,
     DefaultSelectedPipe,
     HasCorrectKeyPipe,
-    IdToStringPipe
+    IdToStringPipe,
+    SpacerPipe,
+    ButtonTextPipe
   ],
   imports: [
     BrowserModule,
