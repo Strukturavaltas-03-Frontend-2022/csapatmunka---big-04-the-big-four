@@ -9,12 +9,7 @@
       </select>
     </div>
     <div class="mx-1 col-10">
-      <input
-        [(ngModel)]="phrase"
-        class="form-control mx-1"
-        type="text"
-        placeholder="Search..."
-      />
+      <input [(ngModel)]="phrase" class="form-control mx-1" type="text" placeholder="Search..." />
     </div>
   </div>
 </div>
@@ -28,50 +23,30 @@
       <table class="table">
         <thead>
           <tr>
-            <th
-              *ngFor="let col of columns"
-              (click)="sortRequest(col.key)"
-              class="header__sort"
-            >
+            <th *ngFor="let col of columns" (click)="sortRequest(col.key)" class="header__sort">
               {{ col.title }}
-              <i
-                *ngIf="col.key === sortKey && sortDirection == 1"
-                class="fa fa-sort-asc"
-              ></i>
-              <i
-                *ngIf="col.key === sortKey && sortDirection == -1"
-                class="fa fa-sort-desc"
-              ></i>
+              <i *ngIf="col.key === sortKey && sortDirection == 1" class="fa fa-sort-asc"></i>
+              <i *ngIf="col.key === sortKey && sortDirection == -1" class="fa fa-sort-desc"></i>
             </th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          <tr
-            *ngFor="
+          <tr *ngFor="
               let row of list
                 | filter : phrase : filterKey
                 | sorter : sortKey : sortDirection
                 | paginate : { itemsPerPage: 20, currentPage: page }
-            "
-          >
+            ">
             <td *ngFor="let col of columns">
               <h6 class="mb-0 text-sm">{{ row[col.key] }}</h6>
             </td>
             <td>
               <div class="btn-group">
-                <button
-                  (click)="showSuccess()"
-                  (click)="raiseSelect(row)"
-                  class="btn btn-info"
-                >
+                <button (click)="raiseSelect(row)" class="btn btn-info">
                   <i class="fa fa-edit"></i>
                 </button>
-                <button
-                  (click)="showError()"
-                  (click)="raiseDelete(row)"
-                  class="btn btn-danger"
-                >
+                <button (click)="showError()" (click)="raiseDelete(row)" class="btn btn-danger">
                   <i class="fa fa-trash"></i>
                 </button>
               </div>
@@ -91,9 +66,6 @@
         </tbody>
       </table>
     </div>
-    <pagination-controls
-      (pageChange)="page = $event"
-      class="col-md-6 offset-md-3 mt-5"
-    ></pagination-controls>
+    <pagination-controls (pageChange)="page = $event" class="col-md-6 offset-md-3 mt-5"></pagination-controls>
   </div>
 </div>

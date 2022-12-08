@@ -20,8 +20,7 @@ export interface ITableCol {
   styleUrls: ['./data-table.component.scss'],
 })
 export class DataTableComponent<T extends { [x: string]: any }>
-  implements OnInit
-{
+  implements OnInit {
   // Dynamic table components
   @Input() list: T[] = [];
   @Input() columns: ITableCol[] = [];
@@ -45,9 +44,9 @@ export class DataTableComponent<T extends { [x: string]: any }>
   //Toaster
   toastr: ToastrService = inject(ToastrService);
 
-  constructor() {}
+  constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   // Table button methods
   raiseSelect(row: T): void {
@@ -75,6 +74,6 @@ export class DataTableComponent<T extends { [x: string]: any }>
     this.toastr.success('Hello world!', 'Toastr fun!', { timeOut: 6000 });
   }
   showError() {
-    this.toastr.error('everything is broken', 'Major Error');
+    this.toastr.error('The item has been successfully deleted.', 'Deleted!');
   }
 }

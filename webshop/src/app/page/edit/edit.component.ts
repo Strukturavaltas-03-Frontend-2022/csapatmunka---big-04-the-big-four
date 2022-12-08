@@ -3,6 +3,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { FormField, FormService } from 'src/app/service/form.service';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+
 
 import { DataService } from 'src/app/service/data.service';
 import { Bill } from 'src/app/model/bill';
@@ -84,6 +86,8 @@ export class EditComponent implements OnInit {
     private router: Router,
     private dataService: DataService,
     private formService: FormService,
+    private toastr: ToastrService
+
   ) { }
 
   ngOnInit(): void {
@@ -169,11 +173,11 @@ export class EditComponent implements OnInit {
   createProductForm() {
     if (this.dataIdForEdit == 0) {
       this.dataService.getAll('category').subscribe(data => {
-        this.categorySelection = data;
         this.currentProduct = new Product
         this.currentProduct.featured = false;
         this.currentProduct.active = false;
-
+        this.categorySelection = data;
+        this.createControls(this.currentProduct, this.fields,)
       })
     } else {
       this.combinedProductData.subscribe(serverData => {
@@ -307,9 +311,11 @@ export class EditComponent implements OnInit {
       this.submitOrder(this.baseFormGroup.value)
 
     } else if (this.currentFormSection == 'bill') {
-      this.submitCustomer(this.baseFormGroup.value)
+      this.submitBill(this.baseFormGroup.value)
     }
+    this.dataIdForEdit == 0 ? this.toastrCreate() : this.toastrEdit()
   }
+
 
   submitProduct(formValues: { [x: string]: any }) {
     const product = formValues
@@ -376,5 +382,13 @@ export class EditComponent implements OnInit {
     } else {
       this.dataService.update(bill, 'bill').subscribe(data => this.router.navigate(['/', 'bill']))
     }
+  }
+
+  toastrCreate() {
+    this.toastr.success(`A new ${this.currentFormSection} has been created.`, 'Success!', { timeOut: 6000 });
+  }
+
+  toastrEdit() {
+    this.toastr.info(`The ${this.currentFormSection} has been updated successfully.`, 'Updated!', { timeOut: 6000 });
   }
 }
