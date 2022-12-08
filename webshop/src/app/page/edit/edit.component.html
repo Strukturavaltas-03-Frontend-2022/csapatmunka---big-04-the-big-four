@@ -1,25 +1,254 @@
-<div class="col-12">
-  <form *ngIf="dataIsLive$" [formGroup]="baseFormGroup" (ngSubmit)="onSubmit()" style="max-width: 400px;"
+<!-- Product Form -->
+<div class="col-12" *ngIf="currentFormSection=='product'">
+  <form *ngIf="currentProduct" [formGroup]="baseFormGroup" (ngSubmit)="onSubmit()" style="max-width: 400px;"
     class="mx-auto">
+
     <div *ngFor="let field of fields" class="form-group">
       <div>
         <label>{{ field.label }}</label>
-        <ng-container [ngSwitch]="field.htmlTag">
-
+        <ng-container [ngSwitch]="field.fieldType">
           <select *ngSwitchCase="'select'" [formControlName]="field.key" [name]="field.key" class="form-select">
-            <option *ngFor="let opt of field.selectOptions" [value]="opt.value"> {{ opt.text }} </option>
+            <option *ngFor="let opt of categorySelection" [value]="opt.id"
+              [selected]="opt.id | defaultSelected: currentProduct[field.key]">
+              {{opt.name}}
+            </option>
           </select>
 
           <textarea *ngSwitchCase="'textarea'" [formControlName]="field.key" [name]="field.key"
             class="form-control"></textarea>
 
-          <input *ngSwitchDefault [formControlName]="field.key" [name]="field.key" [type]="field.type"
-            [class]="field.type | tagToBootstrapClass">
+          <div *ngSwitchCase="'checkbox'" class="form-check">
+            <input [formControlName]="field.key" [name]="field.key" type="checkbox" class="form-check-input">
+          </div>
+
+          <input *ngSwitchDefault [formControlName]="field.key" [type]="field.type" [name]="field.key"
+            class="form-control">
 
         </ng-container>
-        <div *ngIf="baseFormGroup.controls[field.key].invalid">
+
+        <div *ngIf="baseFormGroup.controls[field.key].invalid" class="error-message">
+          {{field.myErrorMessage}}
         </div>
+
       </div>
+    </div>
+
+
+    <div class="d-grid gap-2 mt-3">
+      <button [disabled]="baseFormGroup.invalid" class="btn btn-primary" type="submit">
+        {{dataIdForEdit | buttonText : currentFormSection}} </button>
     </div>
   </form>
 </div>
+
+<!-- Customer Form -->
+<div class="col-12" *ngIf="currentFormSection=='customer'">
+  <div *ngIf="keyNameSwitchHappened">
+    <form [formGroup]="baseFormGroup" (ngSubmit)="onSubmit()" style="max-width: 400px;" class="mx-auto">
+
+      <div *ngFor="let field of fields" class="form-group">
+        <div *ngIf="field.key != 'address'">
+          <div *ngIf="currentCustomer">
+            <label>{{ field.label }}</label>
+
+            <ng-container [ngSwitch]="field.fieldType">
+
+              <select *ngSwitchCase="'select'" [formControlName]="field.key" [name]="field.key" class="form-select">
+                <option *ngFor="let opt of categorySelection" [value]="opt.id"
+                  [selected]="opt.id | defaultSelected: currentCustomer[field.key]">
+                  {{opt.name}}
+                </option>
+              </select>
+
+              <textarea *ngSwitchCase="'textarea'" [formControlName]="field.key" [name]="field.key"
+                class="form-control"></textarea>
+
+              <div *ngSwitchCase="'checkbox'" class="form-check">
+                <input [formControlName]="field.key" [name]="field.key" type="checkbox" class="form-check-input">
+              </div>
+
+              <input *ngSwitchDefault [formControlName]="field.key" [type]="field.type" [name]="field.key"
+                class="form-control">
+
+            </ng-container>
+
+            <div *ngIf="baseFormGroup.controls[field.key].invalid" class="error-message">
+              {{field.myErrorMessage}}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div formGroupName="address">
+
+        <div *ngFor="let field of addressFields" class="form-group">
+          <div *ngIf="customerAddress">
+            <label>{{ field.label }}</label>
+            <ng-container [ngSwitch]="field.fieldType">
+              <select *ngSwitchCase="'select'" [formControlName]="field.key" [name]="field.key" class="form-select">
+                <option *ngFor="let opt of categorySelection" [value]="opt.id"
+                  [selected]="opt.id | defaultSelected: customerAddress[field.key]">
+                  {{opt.name}}
+                </option>
+              </select>
+
+              <textarea *ngSwitchCase="'textarea'" [formControlName]="field.key" [name]="field.key"
+                class="form-control"></textarea>
+
+              <div *ngSwitchCase="'checkbox'" class="form-check">
+                <input [formControlName]="field.key" [name]="field.key" type="checkbox" class="form-check-input">
+              </div>
+
+              <input *ngSwitchDefault [formControlName]="field.key" [type]="field.type" [name]="field.key"
+                class="form-control" min="0">
+            </ng-container>
+            <div *ngIf=" baseFormGroup.get('address')?.get([field.key])?.invalid" class="error-message">
+              {{field.myErrorMessage}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="d-grid gap-2 mt-3">
+        <button [disabled]="baseFormGroup.invalid" class="btn btn-primary" type="submit">
+          {{dataIdForEdit | buttonText : currentFormSection}} </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Order Form -->
+<div class="col-12" *ngIf="currentFormSection=='order'">
+  <form *ngIf="currentOrder" [formGroup]="baseFormGroup" (ngSubmit)="onSubmit()" style="max-width: 400px;"
+    class="mx-auto">
+    <div *ngFor="let field of fields" class="form-group">
+      <div>
+
+        <label>{{ field.label }}</label>
+
+        <ng-container [ngSwitch]="field.fieldType">
+
+          <ng-container *ngSwitchCase="'select'" [ngSwitch]="field.key">
+
+            <select *ngSwitchCase="'customerID'" [formControlName]="field.key" [name]="field.key" class="form-select">
+              <option *ngFor="let opt of customerSelection" [value]="opt.id">
+                {{opt['id']}}&nbsp;&nbsp;|&nbsp;&nbsp;{{opt['last_name']}}, {{opt['first_name']}}
+              </option>
+            </select>
+
+            <select *ngSwitchCase="'productID'" [formControlName]="field.key" [name]="field.key" class="form-select">
+              <option *ngFor="let opt of productSelection" [value]="opt.id">
+                {{opt['id']}}&nbsp;&nbsp;|&nbsp;&nbsp;{{opt.name}}, {{opt.type}} -- {{opt.price | currency: 'EUR':
+                'symbol': '1.0-0'}}
+              </option>
+            </select>
+
+            <select *ngSwitchCase="'status'" [formControlName]="field.key" [name]="field.key" class="form-select">
+              <option *ngFor="let opt of field.selectOptions" [value]="opt.value">
+                {{opt.text}}
+              </option>
+            </select>
+
+            <select *ngSwitchDefault [formControlName]="field.key" [name]="field.key" class="form-select">
+              <option *ngFor="let opt of field.selectOptions" [value]="opt.value">
+                {{opt.text}}
+              </option>
+            </select>
+
+          </ng-container>
+
+          <textarea *ngSwitchCase="'textarea'" [formControlName]="field.key" [name]="field.key"
+            class="form-control"></textarea>
+
+          <div *ngSwitchCase="'checkbox'" class="form-check">
+            <input [formControlName]="field.key" [name]="field.key" type="checkbox" class="form-check-input">
+          </div>
+
+          <input *ngSwitchDefault [formControlName]="field.key" [type]="field.type" [name]="field.key"
+            class="form-control" min="0">
+
+        </ng-container>
+
+        <div *ngIf="baseFormGroup.controls[field.key].invalid" class="error-message">
+          {{field.myErrorMessage}}
+        </div>
+
+      </div>
+    </div>
+
+    <div class="d-grid gap-2 mt-3">
+      <button [disabled]="baseFormGroup.invalid" class="btn btn-primary" type="submit">
+        {{dataIdForEdit | buttonText : currentFormSection}}</button>
+    </div>
+
+  </form>
+</div>
+
+<!-- Bill Form -->
+<div class="col-12" *ngIf="currentFormSection=='bill'">
+  <form *ngIf="currentBill" [formGroup]="baseFormGroup" (ngSubmit)="onSubmit()" style="max-width: 400px;"
+    class="mx-auto needs-validation">
+    <div *ngFor="let field of fields" class="form-group">
+      <div *ngIf="customerSelection != undefined">
+
+        <label>{{ field.label }}</label>
+
+        <ng-container [ngSwitch]="field.fieldType">
+
+          <ng-container *ngSwitchCase="'select'" [ngSwitch]="field.key">
+
+            <select *ngSwitchCase="'orderID'" [formControlName]="field.key" [name]="field.key"
+              class="form-select monospace ">
+              <option *ngFor="let opt of orderSelection" [value]="opt.id">
+                {{opt['id'] | spacer}}
+                {{customerSelection | idToString : opt['customerID']: 'customer' | spacer}}
+                {{productSelection| idToString : opt['productID']: 'product'}}
+                Amount: {{opt['amount']}},
+                Status: {{opt['status']}}
+              </option>
+            </select>
+
+            <select *ngSwitchCase="'status'" [formControlName]="field.key" [name]="field.key" class="form-select">
+              <option *ngFor="let opt of field.selectOptions" [value]="opt.value"> {{opt.text}}</option>
+            </select>
+
+          </ng-container>
+
+          <textarea *ngSwitchCase="'textarea'" [formControlName]="field.key" [name]="field.key"
+            class="form-control"></textarea>
+
+          <div *ngSwitchCase="'checkbox'" class="form-check">
+            <input [formControlName]="field.key" [name]="field.key" type="checkbox" class="form-check-input">
+          </div>
+
+          <input *ngSwitchDefault [formControlName]="field.key" [type]="field.type" [name]="field.key"
+            class="form-control " min="0">
+
+        </ng-container>
+
+        <div *ngIf="baseFormGroup.controls[field.key].invalid" class="error-message">
+          {{field.myErrorMessage}}
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="d-grid gap-2 mt-3">
+      <button [disabled]="baseFormGroup.invalid" class="btn btn-primary" type="submit">
+        {{dataIdForEdit | buttonText : currentFormSection}} </button>
+    </div>
+
+  </form>
+</div>
+
+<!-- 
+    <div *ngIf="addressFormGroup">
+      <form [formGroup]="combinedCustomerFormGroup">
+        <div formGroupName="address">
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" formControlName="mynewkey" class="form-control">
+          </div>
+        </div>
+      </form>
+    </div> -->
