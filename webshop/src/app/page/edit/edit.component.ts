@@ -326,25 +326,34 @@ export class EditComponent implements OnInit {
   submitCustomer(formValues: { [x: string]: any }) {
     const customer = formValues
     const address = customer['address']
-    address.id = this.addressId
 
     if (this.dataIdForEdit == 0) {
-      this.dataService.create(address, 'address').subscribe()
+      this.dataService.create(address, 'address').subscribe(data => {
+        this.dataService.getAll('address').subscribe(serverData => {
+          const latestElement = serverData.pop()
+          this.addressId = latestElement.id
+
+          customer['address'] = this.addressId
+          customer['id'] = Number(this.dataIdForEdit)
+          delete Object.assign(customer, { ['first_name']: customer['firstName'] })['firstName'];
+          delete Object.assign(customer, { ['last_name']: customer['lastName'] })['lastName'];
+
+          this.dataService.create(customer, 'customer').subscribe(data => this.router.navigate(['/', 'customer']))
+        })
+      })
+
     } else {
+      address.id = this.addressId
       this.dataService.update(address, 'address').subscribe()
-    }
 
-    customer['address'] = this.addressId
-    customer['id'] = Number(this.dataIdForEdit)
-    delete Object.assign(customer, { ['first_name']: customer['firstName'] })['firstName'];
-    delete Object.assign(customer, { ['last_name']: customer['lastName'] })['lastName'];
+      customer['address'] = this.addressId
+      customer['id'] = Number(this.dataIdForEdit)
+      delete Object.assign(customer, { ['first_name']: customer['firstName'] })['firstName'];
+      delete Object.assign(customer, { ['last_name']: customer['lastName'] })['lastName'];
 
-    if (this.dataIdForEdit == 0) {
-      this.dataService.create(customer, 'customer').subscribe(data => this.router.navigate(['/', 'customer']))
-    } else {
       this.dataService.update(customer, 'customer').subscribe(data => this.router.navigate(['/', 'customer']))
-    }
 
+    }
   }
 
   submitOrder(formValues: { [x: string]: any }) {
