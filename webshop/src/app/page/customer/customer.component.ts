@@ -58,20 +58,24 @@ export class CustomerComponent {
       this.combinedList[index].active=item.active
       let addIdx=this.addressList.findIndex((element)=>element.id==item.address)
       this.combinedList[index].address=`${this.addressList[addIdx].notes},
-                                        ${this.addressList[addIdx].street}, 
-                                        ${this.addressList[addIdx].city}, 
-                                        ${this.addressList[addIdx].country}, 
+                                        ${this.addressList[addIdx].street},
+                                        ${this.addressList[addIdx].city},
+                                        ${this.addressList[addIdx].country},
                                         ${this.addressList[addIdx].zip}`
     })
   }
 
   onSelect( customer:  CustomerDisp): void {
      this._router.navigateByUrl(`/edit-customer/${customer.id}`)
-   
+
   }
 
   onDelete(customer:  CustomerDisp): void {
     this.dataService.delete( customer.id, 'customer').subscribe(
       () => this.updateCombinedList());
+  }
+
+  onCreate(): void {
+    this._router.navigate(['/edit-customer/0']);
   }
 }
