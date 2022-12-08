@@ -5,11 +5,13 @@ import { ValidatorFn, Validators } from '@angular/forms';
 export class FormField {
   label: string = '';
   key: string = '';
+  originalKey?: string = '';
+  subKey?: string = '';
   type?: string = 'text';
-  htmlTag?: string = 'input'
+  fieldType?: string = 'input'
   selectOptions?: { text: string, value: any }[];
   validators?: ValidatorFn[] = [];
-  errorMessage?: string;
+  myErrorMessage?: string;
 }
 
 @Injectable({
@@ -24,54 +26,61 @@ export class FormService {
       key: 'name',
       validators: [
         Validators.required,
+        Validators.pattern(/^[a-záíűőüöúóé ,.'-]{3,30}$/i),
       ],
+      myErrorMessage: `The product name must be 3-30 characters long and can't contain special characters  (except: ,.'-)`
     },
     {
       label: 'Type',
       key: 'type',
       validators: [
+        Validators.pattern(/^.{2,15}$/i),
         Validators.required,
       ],
-    },
-    {
-      label: 'Category',
-      key: 'category',
-      validators: [
-        Validators.required,
-      ]
-    },
-    {
-      label: 'CategoryID',
-      key: 'catID',
-      validators: [
-        Validators.required,
-      ]
+      myErrorMessage: 'The type must be 2-15 characters long.'
     },
     {
       label: 'Description',
       key: 'description',
-      htmlTag: 'textarea',
+      fieldType: 'textarea',
       validators: [
+        Validators.pattern(/[^0]+/),
         Validators.required,
-      ]
+      ],
+      myErrorMessage: `You can't leave this field empty.`
     },
     {
       label: 'Price',
-      key: 'description',
+      key: 'price',
       type: 'number',
       validators: [
+        Validators.pattern(/^(?:(?:[1-9][0-9]{0,14})(?:\.[0-9]{0,2})?|\.[0-9]+)$/),
         Validators.required,
-      ]
+      ],
+      myErrorMessage: `Max length: 15 number, and it can have decimals but no leading zeros.`
     },
     {
       label: 'Featured',
       key: 'featured',
       type: 'checkbox',
+      fieldType: 'checkbox',
+
     },
     {
       label: 'Active',
       key: 'active',
       type: 'checkbox',
+      fieldType: 'checkbox',
+    },
+    {
+      label: 'Category',
+      key: 'catID',
+      fieldType: 'select',
+      validators: [
+        Validators.pattern(/[^0]+/),
+        Validators.required,
+      ],
+      myErrorMessage: 'You must pick a status!',
     },
   ];
 
@@ -80,15 +89,19 @@ export class FormService {
       label: 'First name',
       key: 'first_name',
       validators: [
+        Validators.pattern(/^[a-záíűőüöúóé ,.'-]{2,20}$/i),
         Validators.required,
       ],
+      myErrorMessage: `The first name must be 2-30 characters long and can't contain special characters (except: ,.'-)`,
     },
     {
       label: 'Last name',
       key: 'last_name',
       validators: [
+        Validators.pattern(/^[a-záíűőüöúóé ,.'-]{2,20}$/i),
         Validators.required,
       ],
+      myErrorMessage: `The last name must be 2-30 characters long and can't contain special characters (except: ,.'-)`,
     },
     {
       label: 'Email',
@@ -96,205 +109,188 @@ export class FormService {
       validators: [
         Validators.email,
         Validators.required,
-      ]
-    },
-    {
-      label: 'Address',
-      key: 'address',
-      validators: [
-        Validators.required,
-      ]
+      ],
+      myErrorMessage: `Please provide a valid email address.`,
     },
     {
       label: 'Active',
       key: 'active',
       type: 'checkbox',
+      fieldType: 'checkbox',
+    },
+    {
+      label: 'Address',
+      key: 'address',
     },
   ];
 
+  addressEditorFormFields: FormField[] = [
+    {
+      label: 'ZIP code',
+      key: 'zip',
+      type: 'number',
+      validators: [
+        Validators.pattern(/^[1-9][0-9]{3,4}$/i),
+        Validators.required,
+      ],
+      myErrorMessage: `ZIP code should have 4 or 5 numbers.`,
+
+    },
+    {
+      label: 'Country',
+      key: 'country',
+      validators: [
+        Validators.pattern(/^[a-záíűőüöúóé ,.'-]{2,56}$/i),
+        Validators.required,
+      ],
+      myErrorMessage: `You can't leave this field empty.`,
+
+    },
+    {
+      label: 'City',
+      key: 'city',
+      validators: [
+        Validators.pattern(/^[a-záíűőüöúóé ,.'-]{2,85}$/i),
+        Validators.required,
+      ],
+      myErrorMessage: `You can't leave this field empty.`,
+    },
+    {
+      label: 'Street',
+      key: 'street',
+      validators: [
+        Validators.pattern(/^[a-záíűőüöúóé ,.'-]{2,50}$/i),
+        Validators.required,
+      ],
+      myErrorMessage: `You can't leave this field empty`,
+    },
+    {
+      label: 'Notes',
+      key: 'notes',
+      fieldType: 'textarea',
+      validators: [
+        Validators.required,
+      ],
+      myErrorMessage: `You can't leave this field empty.`,
+    },
+  ]
+
   orderEditorFormFields: FormField[] = [
     {
-      label: 'CustomerID',
-      key: 'customerID',
-      validators: [
-        Validators.required,
-      ],
-    },
-    {
       label: 'Customer',
-      key: 'customer',
+      key: 'customerID',
+      fieldType: 'select',
+      myErrorMessage: 'You must choose a customer from the list!',
       validators: [
-        Validators.required,
-      ],
-    },
-    {
-      label: 'ProductID',
-      key: 'productID',
-      validators: [
+        Validators.pattern(/^[1-9][0-9]*$/),
         Validators.required,
       ],
     },
     {
       label: 'Product',
-      key: 'product',
+      key: 'productID',
+      fieldType: 'select',
       validators: [
+        Validators.pattern(/^[1-9][0-9]*$/),
         Validators.required,
       ],
+      myErrorMessage: 'You must choose a product from the list!',
     },
+
     {
       label: 'Amount',
       key: 'amount',
       type: 'number',
       validators: [
+        Validators.pattern(/^[1-9][0-9]*$/),
         Validators.required,
-      ]
+      ],
+      myErrorMessage: 'Amount has to be larger than 0!',
+
     },
     {
       label: 'Status',
       key: 'status',
-      htmlTag: 'select',
+      fieldType: 'select',
       selectOptions: [
         { text: 'New', value: 'new' },
         { text: 'Shipped', value: 'shipped' },
         { text: 'Paid', value: 'paid' },
       ],
       validators: [
+        Validators.pattern(/new|shipped|paid/),
         Validators.required,
-      ]
+      ],
+      myErrorMessage: 'You must pick a status!',
     },
-    {
-      label: 'Active',
-      key: 'active',
-      type: 'checkbox',
-    },
+
   ];
 
   billEditorFormFields: FormField[] = [
     {
       label: 'Order',
       key: 'orderID',
+      fieldType: 'select',
       validators: [
+        Validators.pattern(/^[1-9][0-9]*$/),
         Validators.required,
       ],
+      myErrorMessage: 'You must choose an order from the list!',
     },
     {
       label: 'Amount',
       key: 'amount',
       type: 'number',
       validators: [
+        Validators.pattern(/^[1-9][0-9]*$/),
         Validators.required,
       ],
+      myErrorMessage: 'Amount has to be larger than 0!',
     },
     {
       label: 'Status',
       key: 'status',
-      htmlTag: 'select',
+      fieldType: 'select',
       selectOptions: [
         { text: 'New', value: 'new' },
+        { text: 'Shipped', value: 'shipped' },
         { text: 'Paid', value: 'paid' },
       ],
+      validators: [
+        Validators.pattern(/new|shipped|paid/),
+        Validators.required,
+      ],
+      myErrorMessage: 'You must pick a status!',
+    },
+  ];
+
+  // Accessory fields
+  categoryEditorFormFields: FormField[] = [
+    {
+      label: 'Category ID',
+      key: 'id',
       validators: [
         Validators.required,
       ]
     },
     {
-      label: 'Active',
-      key: 'active',
-      type: 'checkbox',
+      label: 'Category Name',
+      key: 'name',
+      validators: [
+        Validators.required,
+      ]
     },
+    {
+      label: 'Category Description',
+      key: 'description',
+      fieldType: 'textarea',
+      validators: [
+        Validators.required,
+      ]
+    }
   ];
+
 
   constructor() { }
 
-
-  usersList: any = [
-    {
-      id: 1,
-      name: 'Leanne Graham',
-      username: 'Bret',
-      email: 'Sincere@april.biz',
-      address: {
-        street: 'Kulas Light',
-        suite: 'Apt. 556',
-        city: 'Gwenborough',
-        zipcode: '92998-3874',
-        geo: {
-          lat: '-37.3159',
-          lng: '81.1496',
-        },
-      },
-      phone: '1-770-736-8031 x56442',
-      website: 'hildegard.org',
-      company: {
-        name: 'Romaguera-Crona',
-        catchPhrase: 'Multi-layered client-server neural-net',
-        bs: 'harness real-time e-markets',
-      },
-      cars: [
-        { name: 'Ford', models: 'Fiesta' },
-        { name: 'BMW', models: 'X1' },
-        { name: 'Fiat', models: '100' },
-      ],
-    },
-    {
-      id: 2,
-      name: 'Ervin Howell',
-      username: 'Antonette',
-      email: 'Shanna@melissa.tv',
-      address: {
-        street: 'Victor Plains',
-        suite: 'Suite 879',
-        city: 'Wisokyburgh',
-        zipcode: '90566-7771',
-        geo: {
-          lat: '-43.9509',
-          lng: '-34.4618',
-        },
-      },
-      phone: '010-692-6593 x09125',
-      website: 'anastasia.net',
-      company: {
-        name: 'Deckow-Crist',
-        catchPhrase: 'Proactive didactic contingency',
-        bs: 'synergize scalable supply-chains',
-      },
-      cars: [
-        { name: 'Ford', models: 'Fiesta' },
-        { name: 'BMW', models: 'X2' },
-        { name: 'Fiat', models: '200' },
-      ],
-    },
-    {
-      id: 3,
-      name: 'Clementine Bauch',
-      username: 'Samantha',
-      email: 'Nathan@yesenia.net',
-      address: {
-        street: 'Douglas Extension',
-        suite: 'Suite 847',
-        city: 'McKenziehaven',
-        zipcode: '59590-4157',
-        geo: {
-          lat: '-68.6102',
-          lng: '-47.0653',
-        },
-      },
-      phone: '1-463-123-4447',
-      website: 'ramiro.info',
-      company: {
-        name: 'Romaguera-Jacobson',
-        catchPhrase: 'Face to face bifurcated interface',
-        bs: 'e-enable strategic applications',
-      },
-      cars: [
-        { name: 'Ford', models: 'Fiesta' },
-        { name: 'BMW', models: 'X3' },
-        { name: 'Fiat', models: '300' },
-      ],
-    },
-  ];
-
-  fetchUsersList() {
-    return [...this.usersList];
-  }
 }
