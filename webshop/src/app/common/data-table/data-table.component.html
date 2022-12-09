@@ -1,5 +1,5 @@
 <div class="row mt-2 mb-2">
-  <div class="input-group col-12 input-group-outline">
+  <div class="input-group col-12 input-group-outline search__group">
     <div>
       <select [(ngModel)]="filterKey" class="form-select">
         <option value="">Search everywhere</option>
@@ -8,14 +8,17 @@
         </option>
       </select>
     </div>
-    <div class="mx-1 col-10">
-      <input [(ngModel)]="phrase" class="form-control mx-1" type="text" placeholder="Search..." />
+    <div class="mx-1 search__container">
+      <input [(ngModel)]="phrase" class="form-control mx-1 search__input" type="text" placeholder="Search..." />
     </div>
   </div>
 </div>
 
 <div class="row">
-  <button (click)="(raiseCreate())" class="btn btn-info mt-4 ml-1 mr-2 col-12">
+  <div class="pagination__container--top d-flex justify-content-center">
+    <pagination-controls (pageChange)="page = $event" class="d-flex pagination__top"></pagination-controls>
+  </div>
+  <button (click)="(raiseCreate())" class="btn btn-info ml-1 mr-2 col-12">
     <i class="fa fa-plus"></i>
   </button>
   <div class="card">
@@ -68,6 +71,8 @@
         </tbody>
       </table>
     </div>
-    <pagination-controls (pageChange)="page = $event" class="col-md-6 offset-md-3 mt-5"></pagination-controls>
+    <div class="pagination__container--bottom d-flex justify-content-center">
+      <pagination-controls (pageChange)="page = $event" class="pagination__bottom"></pagination-controls>
+    </div>
   </div>
 </div>

@@ -16,6 +16,32 @@
   }
 }
 
+.search__group {
+  display: flex;
+  flex-direction: row;
+}
+
+.search__container {
+  flex-grow: 1;
+  padding: 0;
+}
+
+.search__input {
+  width: 100%;
+  flex-grow: 1;
+  height: 2.6rem;
+}
+
 #toast-container > div {
-  opacity:1;
+  opacity: 1;
+}
+
+.pagination__bottom {
+  position: relative;
+  left: -32px;
+}
+
+.pagination__top {
+  position: relative;
+  left: -32px;
 }
