@@ -4,8 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'tableColSum',
 })
 export class TableColSumPipe<T extends { [x: string]: any }>
-  implements PipeTransform
-{
+  implements PipeTransform {
   transform(rows: T[], colKey: string = ''): string {
     if (!Array.isArray(rows) || !colKey) {
       return '';
@@ -15,6 +14,6 @@ export class TableColSumPipe<T extends { [x: string]: any }>
     rows.forEach((row) => {
       output += Number(row[colKey]);
     });
-    return '' + output + ' $';
+    return '' + output;
   }
 }
