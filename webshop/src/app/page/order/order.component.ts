@@ -33,7 +33,7 @@ export class OrderComponent {
     private dataService: DataService,
     private config: ConfigService,
     private _router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.updateCombinedList();
@@ -47,6 +47,7 @@ export class OrderComponent {
         this.Customers$.subscribe((data) => {
           this.customerList = data;
           this.combinedList = [];
+          this.setHideLoader(data)
           this.CombineData();
         });
       });
@@ -93,5 +94,18 @@ export class OrderComponent {
 
   onCreate(): void {
     this._router.navigate(['/edit-order/0']);
+  }
+
+  hideloader() {
+    const loadingggg = document.getElementById('loading');
+    if (loadingggg) {
+      loadingggg.classList.add('visually-hidden')
+    }
+  }
+
+  setHideLoader(dataToWaitFor: any) {
+    if (dataToWaitFor) {
+      this.hideloader();
+    }
   }
 }

@@ -24,7 +24,7 @@ export class ProductComponent {
     private dataService: DataService,
     private config: ConfigService,
     private _router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.updateCombinedList();
@@ -36,6 +36,7 @@ export class ProductComponent {
       this.categories$.subscribe((data) => {
         this.categoryList = data;
         this.combinedList = [];
+        this.setHideLoader(data)
         this.CombineData();
       });
     });
@@ -74,5 +75,18 @@ export class ProductComponent {
 
   onCreate(): void {
     this._router.navigate(['/edit-product/0']);
+  }
+
+  hideloader() {
+    const loadingggg = document.getElementById('loading');
+    if (loadingggg) {
+      loadingggg.classList.add('visually-hidden')
+    }
+  }
+
+  setHideLoader(dataToWaitFor: any) {
+    if (dataToWaitFor) {
+      this.hideloader();
+    }
   }
 }

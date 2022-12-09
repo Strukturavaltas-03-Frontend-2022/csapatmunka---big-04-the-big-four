@@ -13,6 +13,7 @@ import { Order } from 'src/app/model/order';
 import { Product } from 'src/app/model/product';
 import { Category } from 'src/app/model/category';
 import { Address } from 'src/app/model/address';
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -22,6 +23,7 @@ import { Address } from 'src/app/model/address';
 })
 
 export class EditComponent implements OnInit {
+
 
   currentFormSection: string = ''
 
@@ -86,14 +88,19 @@ export class EditComponent implements OnInit {
     private router: Router,
     private dataService: DataService,
     private formService: FormService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private http: HttpClient
 
   ) { }
 
   ngOnInit(): void {
     this.setUpCorrectForm(this.router.url)
-
   }
+
+
+
+
+
 
   // METHODS ------------------------------------------------------------------
 
@@ -149,8 +156,6 @@ export class EditComponent implements OnInit {
     if (this.dataIdForEdit == 0) {
       this.currentCustomer = new Customer;
       this.customerAddress = new Address;
-
-
       this.createControls(this.currentCustomer, this.fields, this.customerAddress)
 
     } else {
@@ -202,6 +207,7 @@ export class EditComponent implements OnInit {
     givenFields: FormField[],
     givenAddress?: Address
   ): void {
+    this.setHideLoader(givenData)
 
     // Check for givenData
     if (givenData == null) {
@@ -384,6 +390,8 @@ export class EditComponent implements OnInit {
     }
   }
 
+
+  // Toastr
   toastrCreate() {
     this.toastr.success(`A new ${this.currentFormSection} has been created.`, 'Success!', { timeOut: 6000 });
   }
@@ -391,4 +399,24 @@ export class EditComponent implements OnInit {
   toastrEdit() {
     this.toastr.info(`The ${this.currentFormSection} has been updated successfully.`, 'Updated!', { timeOut: 6000 });
   }
+
+
+  // Spinner
+  // https://www.geeksforgeeks.org/how-to-display-spinner-on-the-screen-till-the-data-from-the-api-loads-using-angular-8/
+
+  hideloader() {
+    const loadingggg = document.getElementById('loading');
+    if (loadingggg) {
+      loadingggg.classList.add('visually-hidden')
+    }
+  }
+
+  setHideLoader(dataToWaitFor: any) {
+    if (dataToWaitFor) {
+      this.hideloader();
+    }
+  }
+
+
+
 }

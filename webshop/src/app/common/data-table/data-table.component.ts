@@ -46,7 +46,9 @@ export class DataTableComponent<T extends { [x: string]: any }>
 
   constructor() { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+
+  }
 
   // Table button methods
   raiseSelect(row: T): void {
@@ -76,4 +78,5 @@ export class DataTableComponent<T extends { [x: string]: any }>
   showError() {
     this.toastr.error('The item has been successfully deleted.', 'Deleted!');
   }
+
 }

@@ -37,7 +37,7 @@ export class BillComponent {
     private dataService: DataService,
     private config: ConfigService,
     private _router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.updateCombinedList();
@@ -53,6 +53,7 @@ export class BillComponent {
           this.bills$.subscribe((data) => {
             this.billList = data;
             this.combinedList = [];
+            this.setHideLoader(data)
             this.CombineData();
           });
         });
@@ -110,5 +111,17 @@ export class BillComponent {
 
   onCreate(): void {
     this._router.navigate(['/edit-bill/0']);
+  }
+  hideloader() {
+    const loadingggg = document.getElementById('loading');
+    if (loadingggg) {
+      loadingggg.classList.add('visually-hidden')
+    }
+  }
+
+  setHideLoader(dataToWaitFor: any) {
+    if (dataToWaitFor) {
+      this.hideloader();
+    }
   }
 }
