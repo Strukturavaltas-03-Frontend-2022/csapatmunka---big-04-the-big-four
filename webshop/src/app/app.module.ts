@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ToastrModule } from 'ngx-toastr';
 
+
 import { AppComponent } from './app.component';
 import { SidebarComponent } from './common/sidebar/sidebar.component';
 import { HomeComponent } from './page/home/home.component';

@@ -207,7 +207,12 @@ export class EditComponent implements OnInit {
     givenFields: FormField[],
     givenAddress?: Address
   ): void {
-    this.setHideLoader(givenData)
+    if (Number(this.dataIdForEdit) == Number(0)) {
+      this.hideloader()
+      this.setHideLoader(givenData)
+    } else {
+      this.setHideLoader(givenData)
+    }
 
     // Check for givenData
     if (givenData == null) {
@@ -251,8 +256,6 @@ export class EditComponent implements OnInit {
       // Add the addressFormGroup to the main FormGroup, with 'address' key if its the Customer Form
       if (this.currentFormSection == 'customer') {
         this.baseFormGroup.addControl('address', this.addressFormGroup)
-        console.log(this.baseFormGroup.get('address'))
-
       }
     }
 
