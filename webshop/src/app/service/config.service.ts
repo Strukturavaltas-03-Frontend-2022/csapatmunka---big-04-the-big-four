@@ -23,8 +23,8 @@ export class ConfigService {
 
   customerTableColumns: ITableColumn[] = [
     { title: 'ID', key: 'id' },
-    { title: 'First_name', key: 'first_name' },
-    { title: 'Last_name', key: 'last_name' },
+    { title: 'First name', key: 'first_name' },
+    { title: 'Last name', key: 'last_name' },
     { title: 'Email', key: 'email' },
     { title: 'Address', key: 'address' },
     { title: 'Active', key: 'active' },
@@ -44,7 +44,7 @@ export class ConfigService {
     { title: 'Amount', key: 'amount' },
     { title: 'Status', key: 'status' },
   ];
-  
+
 
   constructor() { }
 }

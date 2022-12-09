@@ -23,7 +23,9 @@
       <table class="table">
         <thead>
           <tr>
-            <th *ngFor="let col of columns" (click)="sortRequest(col.key)" class="header__sort">
+            <th *ngFor="let col of columns" class="header__sort" draggable="true" (click)="sortRequest(col.key)"
+              (dragstart)="onHeaderDragStart($event)" (drop)="onHeaderDrop($event)" (dragover)="$event.preventDefault()"
+              id="{{col.key}}">
               {{ col.title }}
               <i *ngIf="col.key === sortKey && sortDirection == 1" class="fa fa-sort-asc"></i>
               <i *ngIf="col.key === sortKey && sortDirection == -1" class="fa fa-sort-desc"></i>

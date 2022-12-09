@@ -56,7 +56,7 @@ registerLocaleData(localeDe, 'de')
     HasCorrectKeyPipe,
     IdToStringPipe,
     SpacerPipe,
-    ButtonTextPipe
+    ButtonTextPipe,
   ],
   imports: [
     BrowserModule,

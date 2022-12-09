@@ -44,6 +44,9 @@ export class DataTableComponent<T extends { [x: string]: any }>
   //Toaster
   toastr: ToastrService = inject(ToastrService);
 
+  // Drag columns
+  lastDragKey = '';
+
   constructor() { }
 
   ngOnInit(): void {
@@ -79,4 +82,22 @@ export class DataTableComponent<T extends { [x: string]: any }>
     this.toastr.error('The item has been successfully deleted.', 'Deleted!');
   }
 
+
+  onHeaderDragStart(ev: DragEvent): void {
+    this.lastDragKey = (ev.target as HTMLTableCellElement).id;
+  }
+
+  onHeaderDrop(ev: DragEvent): void {
+    ev.preventDefault();
+    const targetID: string = (ev.target as HTMLTableCellElement).id;
+    const fromIndex = this.columns.findIndex(col => col.key === this.lastDragKey)
+    const toIndex = this.columns.findIndex(col => col.key === targetID)
+    this.swapColumns(fromIndex, toIndex)
+  }
+
+  swapColumns(from: number = 2, to: number = 0) {
+    const temp = { ...this.columns[from] }
+    this.columns.splice(from, 1);
+    this.columns.splice(to, 0, temp);
+  }
 }

@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit {
   customerList: CustomerServer[] = []
   Customers$: Observable<CustomerServer[]> = this.dataService.getAll('customer');
 
-  unpaidSum:string="";
+  unpaidSum: string = "";
   billList: BillServer[] = []
   bills$: Observable<BillServer[]> = this.dataService.getAll('bill');
 
@@ -90,12 +90,13 @@ export class HomeComponent implements OnInit {
     this.openOrders = accumulator;
     //Még nem fizetett számlák összege
     accumulator = 0;
-    this.billList.forEach(item => { 
-      if (item.status == "new") { 
-        let currOrder=this.getOrder(item.orderID)
-        let currProduct=this.getProduct(currOrder.productID)
-        accumulator=accumulator+currProduct.price*item.amount
-       } });
+    this.billList.forEach(item => {
+      if (item.status == "new") {
+        let currOrder = this.getOrder(item.orderID)
+        let currProduct = this.getProduct(currOrder.productID)
+        accumulator = accumulator + currProduct.price * item.amount
+      }
+    });
     this.unpaidSum = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(accumulator);
 
   }
@@ -116,6 +117,7 @@ export class HomeComponent implements OnInit {
     else
       return new OrderServer()
   }
+
 
 
 }
